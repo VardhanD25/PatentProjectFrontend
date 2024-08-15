@@ -10,8 +10,11 @@ const AddPart = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [existingPartCodes, setExistingPartCodes] = useState([]);
   const [userId, setUserId] = useState('');
-  const [elementSymbols, setElementSymbols] = useState([]); // State for element symbols
-  const [selectedSymbols, setSelectedSymbols] = useState(new Set()); // Track selected symbols using a Set
+  const [elementSymbols, setElementSymbols] = useState([]);
+  const [selectedSymbols, setSelectedSymbols] = useState(new Set());
+  const [standardAlloys, setStandardAlloys] = useState([]); // State for standard alloys
+  const [selectedStandardAlloy, setSelectedStandardAlloy] = useState(''); // State for selected standard alloy
+  const [useStandardAlloy, setUseStandardAlloy] = useState(false); // State to determine if standard alloy is used
   const navigate = useNavigate();
 
   const getEmailFromLocalStorage = () => {
@@ -74,6 +77,21 @@ const AddPart = () => {
     fetchElementSymbols();
   }, []);
 
+  // Fetch standard alloys for the dropdown
+  useEffect(() => {
+    const fetchStandardAlloys = async () => {
+      try {
+        const response = await fetch('http://localhost:4000/standardAlloy/');
+        const data = await response.json();
+        setStandardAlloys(data.alloys);
+      } catch (error) {
+        console.error('Error fetching standard alloys:', error);
+      }
+    };
+
+    fetchStandardAlloys();
+  }, []);
+
   const handleAddElement = () => {
     setComposition([...composition, { symbol: '', percentage: 0 }]);
   };
@@ -131,45 +149,82 @@ const AddPart = () => {
       return;
     }
 
-    // Validation: Ensure all elements have a symbol
-    const hasUnselectedSymbols = composition.some(el => !el.symbol);
-    if (hasUnselectedSymbols) {
-      setErrorMessage('All elements must have a selected symbol.');
-      return;
-    }
-
-    // Validation: Ensure all percentages add up to 100
-    const totalPercentage = composition.reduce((sum, el) => sum + parseFloat(el.percentage || 0), 0);
-    if (totalPercentage !== 100) {
-      setErrorMessage('Total composition percentage must equal 100%.');
-      return;
-    }
-
-    try {
-      const response = await fetch('http://localhost:4000/parts/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ partCode, partName, composition, userId })
-      });
-
-      if (response.ok) {
-        // Reset form after successful submission
-        setPartCode('');
-        setPartName('');
-        setComposition([{ symbol: '', percentage: 0 }]);
-        setSelectedSymbols(new Set());
-        setErrorMessage(''); // Clear any previous error messages
-        alert('Part created successfully!');
-        navigate('/userinput');
-      } else {
-        const errorData = await response.json();
-        setErrorMessage(errorData.message || 'An error occurred.');
+    if (useStandardAlloy) {
+      // Validate that a standard alloy is selected
+      if (!selectedStandardAlloy) {
+        setErrorMessage('Please select a standard alloy.');
+        return;
       }
-    } catch (error) {
-      console.error(error);
-      setErrorMessage('Internal server error.');
+
+      // Proceed with standard alloy submission
+      try {
+        const response = await fetch('http://localhost:4000/parts/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ partCode, partName, userId, standardAlloyId: selectedStandardAlloy })
+        });
+
+        if (response.ok) {
+          // Reset form after successful submission
+          setPartCode('');
+          setPartName('');
+          setSelectedStandardAlloy('');
+          setUseStandardAlloy(false);
+          setErrorMessage('');
+          alert('Part created successfully!');
+          navigate('/userinput');
+        } else {
+          const errorData = await response.json();
+          setErrorMessage(errorData.message || 'An error occurred.');
+        }
+      } catch (error) {
+        console.error(error);
+        setErrorMessage('Internal server error.');
+      }
+    } else {
+      // Validation: Ensure all elements have a symbol
+      const hasUnselectedSymbols = composition.some(el => !el.symbol);
+      if (hasUnselectedSymbols) {
+        setErrorMessage('All elements must have a selected symbol.');
+        return;
+      }
+
+      // Validation: Ensure all percentages add up to 100
+      const totalPercentage = composition.reduce((sum, el) => sum + parseFloat(el.percentage || 0), 0);
+      if (totalPercentage !== 100) {
+        setErrorMessage('Total composition percentage must equal 100%.');
+        return;
+      }
+
+      // Proceed with composition submission
+      try {
+        const response = await fetch('http://localhost:4000/parts/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ partCode, partName, composition, userId })
+        });
+
+        if (response.ok) {
+          // Reset form after successful submission
+          setPartCode('');
+          setPartName('');
+          setComposition([{ symbol: '', percentage: 0 }]);
+          setSelectedSymbols(new Set());
+          setErrorMessage('');
+          alert('Part created successfully!');
+          navigate('/userinput');
+        } else {
+          const errorData = await response.json();
+          setErrorMessage(errorData.message || 'An error occurred.');
+        }
+      } catch (error) {
+        console.error(error);
+        setErrorMessage('Internal server error.');
+      }
     }
   };
 
@@ -199,60 +254,90 @@ const AddPart = () => {
               required
             />
           </div>
+
           <div className="input-group">
-            <label className="input-label">Composition:</label>
-            <div className="element-list">
-              {composition.map((element, index) => (
-                <div key={index} className="element-item">
-                  <select
-                    value={element.symbol}
-                    onChange={(e) =>
-                      handleCompositionChange(index, 'symbol', e.target.value)
-                    }
-                    className="input-field"
-                    required
-                  >
-                    <option value="">Select Symbol</option>
-                    {elementSymbols
-                      .filter(symbol => !selectedSymbols.has(symbol) || symbol === element.symbol)
-                      .map(symbol => (
-                        <option key={symbol} value={symbol}>
-                          {symbol}
-                        </option>
-                      ))}
-                  </select>
-                  <input
-                    type="number"
-                    placeholder="Percentage"
-                    value={element.percentage}
-                    onChange={(e) =>
-                      handleCompositionChange(index, 'percentage', e.target.value)
-                    }
-                    className="input-field"
-                    required
-                    min="0"
-                    max="100"
-                  />
-                  {index > 0 && (
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveElement(index)}
-                      className="remove-btn"
-                    >
-                      Remove
-                    </button>
-                  )}
-                </div>
-              ))}
-            </div>
-            <button
-              type="button"
-              onClick={handleAddElement}
-              className="add-element-btn"
-            >
-              Add Element
-            </button>
+            <label className="input-label">Use Standard Alloy:</label>
+            <input
+              type="checkbox"
+              checked={useStandardAlloy}
+              onChange={(e) => setUseStandardAlloy(e.target.checked)}
+            />
           </div>
+
+          {useStandardAlloy ? (
+            <div className="input-group">
+              <label className="input-label">Select Standard Alloy:</label>
+              <select
+                value={selectedStandardAlloy}
+                onChange={(e) => setSelectedStandardAlloy(e.target.value)}
+                className="input-field"
+                required
+              >
+                <option value="">Select Standard Alloy</option>
+                {standardAlloys.map(alloy => (
+                  <option key={alloy._id} value={alloy._id}>
+                    {alloy.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          ) : (
+            <div className="input-group">
+              <label className="input-label">Composition:</label>
+              <div className="element-list">
+                {composition.map((element, index) => (
+                  <div key={index} className="element-item">
+                    <select
+                      value={element.symbol}
+                      onChange={(e) =>
+                        handleCompositionChange(index, 'symbol', e.target.value)
+                      }
+                      className="input-field"
+                      required
+                    >
+                      <option value="">Select Symbol</option>
+                      {elementSymbols
+                        .filter(symbol => !selectedSymbols.has(symbol) || symbol === element.symbol)
+                        .map(symbol => (
+                          <option key={symbol} value={symbol}>
+                            {symbol}
+                          </option>
+                        ))}
+                    </select>
+                    <input
+                      type="number"
+                      placeholder="Percentage"
+                      value={element.percentage}
+                      onChange={(e) =>
+                        handleCompositionChange(index, 'percentage', e.target.value)
+                      }
+                      className="input-field"
+                      required
+                      min="0"
+                      max="100"
+                    />
+                    {index > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveElement(index)}
+                        className="remove-btn"
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+              <button
+                type="button"
+                onClick={handleAddElement}
+                className="add-element-btn"
+              >
+                Add Element
+              </button>
+            </div>
+          )}
+
           {errorMessage && <p className="validation-message">{errorMessage}</p>}
           <button
             type="submit"

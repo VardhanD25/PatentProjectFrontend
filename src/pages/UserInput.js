@@ -4,8 +4,12 @@ import SecondEntry from '../components/SecondEntry'; // Import SecondEntry compo
 import SinglePieceEntry from '../components/SinglePieceEntry'; // Import ThirdEntry component
 import LotEntry from '../components/LotEntry'
 import Navbar from '../components/Navbar';
+import UpdatePart from '../components/UpdatePart';
 function UserInput() {
   
+  const [isUpdateMode, setIsUpdateMode] = useState(false);
+  const [isUpdatePartVisible, setIsUpdatePartVisible] = useState(false);
+
   const [partCodes, setPartCodes] = useState([]);
   const [selectedPartCode, setSelectedPartCode] = useState('');
   const [partName, setPartName] = useState('');
@@ -46,6 +50,22 @@ function UserInput() {
     }
     return null;
   };
+
+  // useEffect(() => {
+  //   if (densityType === 'calculated') {
+  //     setIsUpdatePartVisible(true);
+  //   } else {
+  //     setIsUpdatePartVisible(false);
+  //   }
+  // }, [densityType]);
+  const handleUpdatePartClose = () => {
+    setIsUpdatePartVisible(false);
+  };
+  const handleUpdatePartSave = () => {
+    // Implement save functionality
+    handleUpdatePartClose(); // Close the update part component
+  };
+  
 
   const email = getEmailFromLocalStorage();
 
@@ -429,7 +449,7 @@ const validateLotEntry = () => {
   return (
     <div>
       <Navbar/>
-      {currentScreen === 'first' && (
+      {!isUpdatePartVisible && currentScreen === 'first' && (
         <FirstEntry 
           partCodes={partCodes}
           onPartCodeChange={handlePartCodeChange}
@@ -450,6 +470,17 @@ const validateLotEntry = () => {
           onMasterAttachmentExistsChange={handleMasterAttachmentExistsChange}
         />
       )}
+      {selectedPartCode && densityType === 'calculated' && !isUpdatePartVisible && (
+  <button
+    onClick={() => setIsUpdatePartVisible(true)}
+    className="fixed right-5 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-blue-600"
+  >
+    {"Open Update Part"}
+  </button>
+)}
+
+
+
       {currentScreen === 'second' && (
         <SecondEntry
           attachmentExists={attachmentExists}
@@ -487,6 +518,14 @@ const validateLotEntry = () => {
         validateEntry={validateSinglePieceEntry}
       />
       )}
+       {isUpdatePartVisible && (
+        <UpdatePart
+          selectedPartCode={selectedPartCode}
+          onSave={handleUpdatePartSave}
+          onClose={handleUpdatePartClose}
+        />
+      )}
+     
       {currentScreen === 'third' && singleOrLot === 'lot' && (
   <LotEntry
   partMassAirArray={partMassAirArray}
