@@ -7,7 +7,6 @@ import Navbar from '../components/Navbar';
 import UpdatePart from '../components/UpdatePart';
 function UserInput() {
   
-  const [isUpdateMode, setIsUpdateMode] = useState(false);
   const [isUpdatePartVisible, setIsUpdatePartVisible] = useState(false);
 
   const [partCodes, setPartCodes] = useState([]);
@@ -105,7 +104,7 @@ function UserInput() {
     if (submitClicked) {
       fetchCompactnessRatio();
     }
-  }, [partMassAir, partMassFluid, partDensity, submitClicked]);
+  }, [partMassAir, partMassFluid,theoreticalDensity, partDensity, submitClicked]);
 
   useEffect(() => {
     const fetchCompactnessRatios = async () => {
@@ -144,7 +143,7 @@ function UserInput() {
     if (submitClicked) {
       fetchCompactnessRatios();
     }
-  }, [partMassAirArray, partMassFluidArray, partDensityArray, submitClicked]);
+  }, [partMassAirArray, partMassFluidArray, partDensityArray, submitClicked,theoreticalDensity]);
   
 
   const handleSubmit = () => {
@@ -246,7 +245,7 @@ function UserInput() {
     };
 
     fetchTheoreticalDensity();
-  }, [selectedPartCode, densityType]);
+  }, [selectedPartCode, densityType,isUpdatePartVisible]);
 
   useEffect(() => {
     const calculatePartDensity = async () => {
@@ -269,7 +268,7 @@ function UserInput() {
     };
 
     calculatePartDensity();
-  }, [partMassAir, partMassFluid, attachmentMassAir, attachmentMassFluid, densityOfFluid]);
+  }, [partMassAir, partMassFluid, attachmentMassAir, attachmentMassFluid, densityOfFluid,attachmentExists]);
 
   useEffect(() => {
     const calculatePartDensities = async () => {
@@ -470,12 +469,12 @@ const validateLotEntry = () => {
           onMasterAttachmentExistsChange={handleMasterAttachmentExistsChange}
         />
       )}
-      {selectedPartCode && densityType === 'calculated' && !isUpdatePartVisible && (
+      {selectedPartCode && densityType === 'calculated' && currentScreen==="first" && !isUpdatePartVisible && (
   <button
     onClick={() => setIsUpdatePartVisible(true)}
     className="fixed right-5 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-blue-600"
   >
-    {"Open Update Part"}
+    {"View Part Composition"}
   </button>
 )}
 
@@ -504,27 +503,38 @@ const validateLotEntry = () => {
   onDensityOfFluidChange={handleDensityOfFluidChange}
         />
       )}
-      {currentScreen === 'third' && singleOrLot==='single' && (
-        <SinglePieceEntry
-        partMassAir={partMassAir}
-        partMassFluid={partMassFluid}
-        partDensity={partDensity}
-        compactnessRatio={compactnessRatio}
-        porosity={porosity}
-        onPartMassAirChange={handlePartMassAirChange}
-        onPartMassFluidChange={handlePartMassFluidChange}
-        //onPartDensityChange={handlePartDensityChange}
-        onSubmit={handleSubmit}
-        validateEntry={validateSinglePieceEntry}
-      />
-      )}
-       {isUpdatePartVisible && (
+      {currentScreen === 'third' && singleOrLot === 'single' && (
+  <SinglePieceEntry
+    partMassAir={partMassAir}
+    partMassFluid={partMassFluid}
+    partDensity={partDensity}
+    compactnessRatio={compactnessRatio}
+    porosity={porosity}
+    date={date}
+    selectedPartCode={selectedPartCode}
+    partName={partName}
+    theoreticalDensity={theoreticalDensity}
+    densityType={densityType}
+    attachmentExists={attachmentExists}
+    masterExists={masterExists}
+    masterAttachmentExists={masterAttachmentExists}
+    densityOfFluid={densityOfFluid}
+    densityOfMasterSample={densityMasterSample}
+    onPartMassAirChange={handlePartMassAirChange}
+    onPartMassFluidChange={handlePartMassFluidChange}
+    onSubmit={handleSubmit}
+    validateEntry={validateSinglePieceEntry}
+  />
+)}
+
+      {isUpdatePartVisible && currentScreen==="first" && (
         <UpdatePart
-          selectedPartCode={selectedPartCode}
-          onSave={handleUpdatePartSave}
-          onClose={handleUpdatePartClose}
+        selectedPartCode={selectedPartCode}
+        onClose={handleUpdatePartClose}
+        onSave={handleUpdatePartSave}
         />
       )}
+       
      
       {currentScreen === 'third' && singleOrLot === 'lot' && (
   <LotEntry
@@ -539,11 +549,22 @@ const validateLotEntry = () => {
   onRemovePart={onRemovePart}
   onSubmit={handleSubmitLot}
   validateLotEntry={validateLotEntry}
+  date={date}
+  selectedPartCode={selectedPartCode}
+  partName={partName}
+  theoreticalDensity={theoreticalDensity}
+  densityType={densityType}
+  attachmentExists={attachmentExists}
+  masterExists={masterExists}
+  masterAttachmentExists={masterAttachmentExists}
+  densityOfFluid={densityOfFluid}
+  densityOfMasterSample={densityMasterSample}
+
   // Include other props as needed
 />
 )}
       <div className="flex justify-between p-4">
-        {currentScreen !== 'first' && (
+        {currentScreen !== 'first' && !isUpdatePartVisible && (
           <button 
             onClick={goToPreviousScreen}
             className="bg-blue-500 text-white px-4 py-2 rounded-lg"
@@ -551,7 +572,7 @@ const validateLotEntry = () => {
             Prev
           </button>
         )}
-        {currentScreen !== 'third' && (
+        {currentScreen !== 'third' && !isUpdatePartVisible && (
           <button 
             onClick={goToNextScreen}
             className="bg-blue-500 text-white px-4 py-2 rounded-lg"

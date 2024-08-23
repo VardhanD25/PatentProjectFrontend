@@ -77,41 +77,53 @@ const UpdatePart = ({ selectedPartCode, onSave, onClose }) => {
   if (error) return <p className="error">Error: {error}</p>;
   if (!part) return <p className="error">No part found.</p>;
 
+  // Conditional rendering based on part.standardAlloyId
   return (
     <div className="update-part-container">
-      <h2>Update Part: {part.partName}</h2>
-      <table className="table">
-        <thead>
-          <tr>
-            <th>Element Symbol</th>
-            <th>Percentage</th>
-          </tr>
-        </thead>
-        <tbody>
-          {composition.map((item, index) => (
-            <tr key={index}>
-              <td>
-                <input
-                  type="text"
-                  value={item.element.symbol || ''}
-                  onChange={(e) => handleCompositionChange(index, 'elementSymbol', e.target.value)}
-                />
-              </td>
-              <td>
-                <input
-                  type="number"
-                  value={item.percentage || ''}
-                  onChange={(e) => handleCompositionChange(index, 'percentage', e.target.value)}
-                />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <div className="button-container">
-        <button className="save-button" onClick={handleSave}>Save</button>
-        <button className="close-button" onClick={onClose}>Close</button>
-      </div>
+      {part.standardAlloyId ? (
+        <div>
+          <p className="message">This part has a standard alloy associated with it. You cannot edit its composition.</p>
+          <div className="button-container">
+            <button className="close-button" onClick={onClose}>Close</button>
+          </div>
+        </div>
+      ) : (
+        <div>
+          <h2>Update Part: {part.partName}</h2>
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Element Symbol</th>
+                <th>Percentage</th>
+              </tr>
+            </thead>
+            <tbody>
+              {composition.map((item, index) => (
+                <tr key={index}>
+                  <td>
+                    <input
+                      type="text"
+                      value={item.element.symbol || ''}
+                      onChange={(e) => handleCompositionChange(index, 'elementSymbol', e.target.value)}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="number"
+                      value={item.percentage || ''}
+                      onChange={(e) => handleCompositionChange(index, 'percentage', e.target.value)}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div className="button-container">
+            <button className="save-button" onClick={handleSave}>Save</button>
+            <button className="close-button" onClick={onClose}>Close</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

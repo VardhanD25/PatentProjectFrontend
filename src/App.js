@@ -6,7 +6,7 @@ import Home from './pages/Home';
 import UserInput from './pages/UserInput';
 import AddPart from './pages/AddPart';
 import ReportPage from './pages/ReportPage';
-import ReportLotPage from './pages/ReportLotPage';
+import LotReportPage from './pages/LotReportPage';
 
 
 function App() {
@@ -22,7 +22,7 @@ function App() {
               <Route path="/userinput" element={<UserInput/>}/>
               <Route path="/reportpage" element={<ReportPage/>}/>
               <Route path="/addpart" element={<AddPart/>}/>
-              <Route path="/reportlotpage" element={<ReportLotPage/>}/>
+              <Route path="/lotreportpage" element={<LotReportPage/>}/>
             </Routes>
           </div>
         </AuthContextProvider>

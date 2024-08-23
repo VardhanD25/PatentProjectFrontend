@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function LotEntry({
   partMassAirArray,
@@ -11,10 +12,83 @@ function LotEntry({
   onAddPart,
   onRemovePart,
   onSubmit,
-  validateLotEntry
+  validateLotEntry,
+  date,
+  selectedPartCode,
+  partName,
+  theoreticalDensity,
+  densityType,
+  attachmentExists,
+  masterExists,
+  masterAttachmentExists,
+  densityOfFluid,
+  densityOfMasterSample
 }) {
   const [showResults, setShowResults] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [validationMessage, setValidationMessage] = useState('');
+  const [composition, setComposition] = useState([]);
+  const [standardAlloyId, setStandardAlloyId] = useState('');
+  const [standardAlloyName, setStandardAlloyName] = useState('');
+  const [standardAlloyCountry, setStandardAlloyCountry] = useState('');
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchPart = async () => {
+      try {
+        const response = await fetch(`http://localhost:4000/parts/${selectedPartCode}`);
+        const data = await response.json();
+
+        if (response.ok) {
+          if (data.part.standardAlloyId) {
+            setStandardAlloyId(data.part.standardAlloyId);
+          } else {
+            setStandardAlloyId('');
+          }
+
+          const fetchedComposition = data.part.composition || [];
+          setComposition(fetchedComposition.map(item => ({
+            ...item,
+            element: item.element || { symbol: '' } // Ensure element is initialized
+          })));
+        } else {
+          setError(data.message || 'Error fetching part response');
+        }
+      } catch (error) {
+        setError('Error fetching part');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPart();
+  }, [selectedPartCode]);
+
+  useEffect(() => {
+    const fetchStandardAlloy = async () => {
+      if (standardAlloyId) { // Only fetch if standardAlloyId is available
+        setLoading(true);
+        try {
+          const response = await fetch(`http://localhost:4000/standardAlloy/${standardAlloyId}`);
+          const data = await response.json();
+
+          if (response.ok) {
+            setStandardAlloyCountry(data.alloy.country);
+            setStandardAlloyName(data.alloy.name);
+          } else {
+            setError(data.message || 'Error fetching standard alloy response');
+          }
+        } catch (error) {
+          setError('Error fetching standard alloy');
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchStandardAlloy();
+  }, [standardAlloyId]);
 
   const handlePartMassAirChange = (index, value) => {
     onPartMassAirChange(value, index);
@@ -40,6 +114,36 @@ function LotEntry({
     }
     onSubmit();
     setShowResults(true);
+  };
+
+  const handleShowReport = () => {
+    navigate('/lotreportpage', {
+      state: {
+        partMassAirArray,
+        partMassFluidArray,
+        partDensityArray,
+        compactnessRatioArray,
+        porosityArray,
+        date,
+        selectedPartCode,
+        partName,
+        theoreticalDensity,
+        densityType,
+        attachmentExists,
+        masterExists,
+        masterAttachmentExists,
+        densityOfFluid,
+        densityOfMasterSample,
+        chemicalComposition: composition.reduce((acc, item) => {
+          acc[item.element.symbol] = item.percentage;
+          return acc;
+        }, {}),
+        standardAlloyCountry,
+      standardAlloyName,
+      optionalReport: true,
+      notes: 'No additional notes.'
+      }
+    });
   };
 
   const handleGoBack = () => {
@@ -82,8 +186,15 @@ function LotEntry({
             </div>
             <button
               type="button"
+              onClick={handleShowReport}
+              className="bg-green-500 text-white px-4 py-2 rounded-lg mt-4"
+            >
+              Show Report
+            </button>
+            <button
+              type="button"
               onClick={handleGoBack}
-              className="bg-blue-500 text-white px-4 py-2 rounded-lg mt-4"
+              className="bg-blue-500 text-white px-4 py-2 rounded-lg mt-4 ml-4"
             >
               Go Back
             </button>
