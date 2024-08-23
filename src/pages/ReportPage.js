@@ -19,8 +19,10 @@ function ReportPage() {
     masterAttachmentExists,
     densityOfMasterSample,
     optionalReport,
+    standardAlloyCountry,
+    standardAlloyName,
     notes,
-  } = location.state.reportData;  // Access the passed data
+  } = location.state.reportData; // Access the passed data
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 font-poppins">
@@ -81,7 +83,7 @@ function ReportPage() {
           </div>
         </div>
 
-        {/* Chemical Composition Table */}
+        {/* Conditional Rendering: Chemical Composition Table or Standard Alloy Details */}
         {chemicalComposition && Object.keys(chemicalComposition).length > 0 ? (
           <div className="mb-4">
             <h2 className="text-lg font-semibold mb-2">Chemical Composition (Weight %)</h2>
@@ -90,7 +92,7 @@ function ReportPage() {
                 <tr>
                   <th className="py-2 border border-gray-300">Element</th>
                   {Object.keys(chemicalComposition).map((element) => (
-                    <th key={element} className="py-2 border border-gray-300">
+                    <th key={element} className="py-2 border border-gray-300 text-center">
                       {element}
                     </th>
                   ))}
@@ -98,9 +100,9 @@ function ReportPage() {
               </thead>
               <tbody>
                 <tr>
-                  <td className="py-2 border border-gray-300">Weight %</td>
+                  <td className="py-2 border border-gray-300 text-center">Weight %</td>
                   {Object.values(chemicalComposition).map((weight, index) => (
-                    <td key={index} className="py-2 border border-gray-300">
+                    <td key={index} className="py-2 border border-gray-300 text-center">
                       {weight}
                     </td>
                   ))}
@@ -109,7 +111,36 @@ function ReportPage() {
             </table>
           </div>
         ) : (
-          <p>No chemical composition data available.</p>
+          <div className="mb-4">
+            <h2 className="text-lg font-semibold mb-2">Standard Alloy Details</h2>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="standardAlloyName" className="block text-sm font-medium text-gray-700 mb-1">
+                  Standard Alloy Name
+                </label>
+                <input
+                  type="text"
+                  id="standardAlloyName"
+                  className="border-gray-300 rounded-lg w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  defaultValue={standardAlloyName}
+                  readOnly
+                />
+              </div>
+
+              <div>
+                <label htmlFor="standardAlloyCountry" className="block text-sm font-medium text-gray-700 mb-1">
+                  Standard Alloy Country
+                </label>
+                <input
+                  type="text"
+                  id="standardAlloyCountry"
+                  className="border-gray-300 rounded-lg w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  defaultValue={standardAlloyCountry}
+                  readOnly
+                />
+              </div>
+            </div>
+          </div>
         )}
 
         {/* Static Dropdown Field for Part Attachments */}
@@ -219,12 +250,11 @@ function ReportPage() {
             id="notes"
             className="border-gray-300 rounded-lg w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             rows="4"
-            defaultValue={notes}
-            readOnly
+            //defaultValue={notes}
+            placeholder='Add additional notes'
+            
           />
         </div>
-
-        {/* Master Exists Logic */}
         {masterExists === 'yes' && (
           <div className="mb-4">
             <h2 className="text-lg font-semibold mb-2">Master Sample Details</h2>
@@ -256,10 +286,10 @@ function ReportPage() {
         )}
 
         <button
-          type="submit"
-          className="w-full bg-black text-white p-2 rounded-lg hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black"
+          onClick={() => window.history.back()}
+          className="bg-blue-500 text-white py-2 px-4 rounded-lg shadow-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
-          Generate Report
+          Go Back
         </button>
       </div>
     </div>
