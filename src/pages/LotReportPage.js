@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useLocation } from 'react-router-dom';
+import html2pdf from 'html2pdf.js';
+import './pageCSS/LotReportPage.css';
 
 function LotReportPage() {
   const location = useLocation();
@@ -20,57 +22,48 @@ function LotReportPage() {
     masterAttachmentExists,
     standardAlloyCountry,
     standardAlloyName,
-    optionalReport = true
+    optionalReport = true,
   } = location.state;
+
+  const reportRef = useRef();
+
+  const handleDownloadReport = () => {
+    const element = reportRef.current; // Capture the report content
+  
+    html2pdf().from(element).set({
+      margin: [10, 10, 10, 10], // Adjust margins if needed
+      filename: 'report.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 1.5, useCORS: true, allowTaint: true }, // Higher scale for better quality
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }, // A4 page size
+      pagebreak: { mode: ['css', 'legacy'] }, // Handle page breaks based on CSS
+    }).save();
+  };
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 font-poppins">
-      <div className="bg-white p-8 rounded-lg shadow-lg border-4 border-black max-w-5xl w-full mx-4 my-6">
+      <div ref={reportRef} className="bg-white p-8 rounded-lg shadow-lg border-4 border-black max-w-5xl w-full mx-4 my-6" id="reportRef">
         <h1 className="text-2xl font-bold text-center mb-6">Lot Report</h1>
 
         <div className="mb-4 grid grid-cols-2 gap-4">
           <div>
-            <label htmlFor="date" className="block text-sm font-medium text-gray-700 mb-1">Date</label>
-            <input
-              type="date"
-              id="date"
-              className="border-gray-300 rounded-lg w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              defaultValue={date}
-              readOnly
-            />
+            <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+            <p className="border-gray-300 rounded-lg w-full p-2 bg-gray-100">{date}</p>
           </div>
 
           <div>
-            <label htmlFor="partCode" className="block text-sm font-medium text-gray-700 mb-1">Part Code</label>
-            <input
-              type="text"
-              id="partCode"
-              className="border-gray-300 rounded-lg w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              defaultValue={partCode}
-              readOnly
-            />
+            <label className="block text-sm font-medium text-gray-700 mb-1">Part Code</label>
+            <p className="border-gray-300 rounded-lg w-full p-2 bg-gray-100">{partCode}</p>
           </div>
 
           <div>
-            <label htmlFor="partName" className="block text-sm font-medium text-gray-700 mb-1">Part Name</label>
-            <input
-              type="text"
-              id="partName"
-              className="border-gray-300 rounded-lg w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              defaultValue={partName}
-              readOnly
-            />
+            <label className="block text-sm font-medium text-gray-700 mb-1">Part Name</label>
+            <p className="border-gray-300 rounded-lg w-full p-2 bg-gray-100">{partName}</p>
           </div>
 
           <div>
-            <label htmlFor="density" className="block text-sm font-medium text-gray-700 mb-1">Theoretical Density (g/cm³)</label>
-            <input
-              type="text"
-              id="density"
-              className="border-gray-300 rounded-lg w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              defaultValue={density}
-              readOnly
-            />
+            <label className="block text-sm font-medium text-gray-700 mb-1">Theoretical Density (g/cm³)</label>
+            <p className="border-gray-300 rounded-lg w-full p-2 bg-gray-100">{density}</p>
           </div>
         </div>
 
@@ -101,41 +94,21 @@ function LotReportPage() {
             <h2 className="text-lg font-semibold mb-2">Standard Alloy Details</h2>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label htmlFor="standardAlloyName" className="block text-sm font-medium text-gray-700 mb-1">Standard Alloy Name</label>
-                <input
-                  type="text"
-                  id="standardAlloyName"
-                  className="border-gray-300 rounded-lg w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  defaultValue={standardAlloyName}
-                  readOnly
-                />
+                <label className="block text-sm font-medium text-gray-700 mb-1">Standard Alloy Name</label>
+                <p className="border-gray-300 rounded-lg w-full p-2 bg-gray-100">{standardAlloyName}</p>
               </div>
 
               <div>
-                <label htmlFor="standardAlloyCountry" className="block text-sm font-medium text-gray-700 mb-1">Standard Alloy Country</label>
-                <input
-                  type="text"
-                  id="standardAlloyCountry"
-                  className="border-gray-300 rounded-lg w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  defaultValue={standardAlloyCountry}
-                  readOnly
-                />
+                <label className="block text-sm font-medium text-gray-700 mb-1">Standard Alloy Country</label>
+                <p className="border-gray-300 rounded-lg w-full p-2 bg-gray-100">{standardAlloyCountry}</p>
               </div>
             </div>
           </div>
         )}
 
         <div className="mb-4">
-          <label htmlFor="partAttachments" className="block text-sm font-medium text-gray-700 mb-1">Part contains attachments:</label>
-          <select
-            id="partAttachments"
-            className="border-gray-300 rounded-lg w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={partAttachments ? 'yes' : 'no'}
-            readOnly
-          >
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-          </select>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Part contains attachments:</label>
+          <p className="border-gray-300 rounded-lg w-full p-2 bg-gray-100">{partAttachments ? 'Yes' : 'No'}</p>
         </div>
 
         <div className="overflow-x-auto mb-6">
@@ -168,14 +141,8 @@ function LotReportPage() {
         </div>
 
         <div className="mb-4">
-          <label htmlFor="optionalReport" className="block text-sm font-medium text-gray-700 mb-1">Optional Report Elements</label>
-          <input
-            type="checkbox"
-            id="optionalReport"
-            className="focus:ring-2 focus:ring-blue-500"
-            checked={optionalReport}
-            readOnly
-          />
+          <label className="block text-sm font-medium text-gray-700 mb-1">Optional Report Elements</label>
+          <p className="border-gray-300 rounded-lg w-full p-2 bg-gray-100">{optionalReport ? 'Yes' : 'No'}</p>
         </div>
 
         <div className="mb-6">
@@ -195,37 +162,26 @@ function LotReportPage() {
             <div className="grid grid-cols-2 gap-4">
               {masterExists && (
                 <div>
-                  <label htmlFor="densityOfMasterSample" className="block text-sm font-medium text-gray-700 mb-1">Density of Master Sample (g/cm³)</label>
-                  <input
-                    type="text"
-                    id="densityOfMasterSample"
-                    className="border-gray-300 rounded-lg w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    defaultValue={densityOfItem}
-                    readOnly
-                  />
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Density of Master Sample (g/cm³)</label>
+                  <p className="border-gray-300 rounded-lg w-full p-2 bg-gray-100">{densityOfItem}</p>
                 </div>
               )}
               {masterAttachmentExists && (
                 <div>
-                  <label htmlFor="masterAttachmentExists" className="block text-sm font-medium text-gray-700 mb-1">Master Attachment Exists</label>
-                  <input
-                    type="text"
-                    id="masterAttachmentExists"
-                    className="border-gray-300 rounded-lg w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    value="Yes"
-                    readOnly
-                  />
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Master Attachment Exists</label>
+                  <p className="border-gray-300 rounded-lg w-full p-2 bg-gray-100">Yes</p>
                 </div>
               )}
             </div>
           </div>
         )}
-
+      </div>
+      <div className="flex justify-center mb-4">
         <button
-          onClick={() => window.history.back()}
-          className="bg-blue-500 text-white py-2 px-4 rounded-lg shadow-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          onClick={handleDownloadReport}
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300"
         >
-          Go Back
+          Download Report
         </button>
       </div>
     </div>

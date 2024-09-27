@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
+import html2pdf from 'html2pdf.js';
+import './pageCSS/ReportPage.css';
 
 function ReportPage() {
   const location = useLocation();
@@ -21,65 +23,53 @@ function ReportPage() {
     optionalReport,
     standardAlloyCountry,
     standardAlloyName,
-    notes,
+    notes: initialNotes,
   } = location.state.reportData; // Access the passed data
+
+  const [notes, setNotes] = useState(initialNotes || ''); // Initialize state for notes
+  const reportRef = useRef(); // Reference to the report div
+
+  const handleNotesChange = (e) => {
+    setNotes(e.target.value); // Update notes as user types
+  };
+
+  // Function to handle printing the report as PDF
+  const handlePrintReport = () => {
+    const element = reportRef.current; // Capture the report content
+  
+    html2pdf(element, {
+      margin: [10, 10, 10, 10], // Adjust margins if needed
+      filename: 'report.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true }, // Higher scale for better quality, CORS support
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }, // A4 page size
+    });
+  };
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 font-poppins">
-      <div className="bg-white p-8 rounded-lg shadow-lg border-4 border-black max-w-5xl w-full mx-4 my-6">
+      <div id="report-content" ref={reportRef} className="bg-white p-8 rounded-lg shadow-lg border-4 border-black max-w-4xl w-full mx-auto">
         <h1 className="text-2xl font-bold text-center mb-6">Report</h1>
 
         <div className="mb-4 grid grid-cols-2 gap-4">
           <div>
-            <label htmlFor="date" className="block text-sm font-medium text-gray-700 mb-1">
-              Date
-            </label>
-            <input
-              type="date"
-              id="date"
-              className="border-gray-300 rounded-lg w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              defaultValue={date}
-              readOnly
-            />
+            <p className="text-sm font-medium text-gray-700">Date:</p>
+            <p>{date}</p>
           </div>
 
           <div>
-            <label htmlFor="partCode" className="block text-sm font-medium text-gray-700 mb-1">
-              Part Code
-            </label>
-            <input
-              type="text"
-              id="partCode"
-              className="border-gray-300 rounded-lg w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              defaultValue={partCode}
-              readOnly
-            />
+            <p className="text-sm font-medium text-gray-700">Part Code:</p>
+            <p>{partCode}</p>
           </div>
 
           <div>
-            <label htmlFor="partName" className="block text-sm font-medium text-gray-700 mb-1">
-              Part Name
-            </label>
-            <input
-              type="text"
-              id="partName"
-              className="border-gray-300 rounded-lg w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              defaultValue={partName}
-              readOnly
-            />
+            <p className="text-sm font-medium text-gray-700">Part Name:</p>
+            <p>{partName}</p>
           </div>
 
           <div>
-            <label htmlFor="density" className="block text-sm font-medium text-gray-700 mb-1">
-              Theoretical Density of Alloy
-            </label>
-            <input
-              type="text"
-              id="density"
-              className="border-gray-300 rounded-lg w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              defaultValue={density}
-              readOnly
-            />
+            <p className="text-sm font-medium text-gray-700">Theoretical Density of Alloy:</p>
+            <p>{density}</p>
           </div>
         </div>
 
@@ -115,183 +105,88 @@ function ReportPage() {
             <h2 className="text-lg font-semibold mb-2">Standard Alloy Details</h2>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label htmlFor="standardAlloyName" className="block text-sm font-medium text-gray-700 mb-1">
-                  Standard Alloy Name
-                </label>
-                <input
-                  type="text"
-                  id="standardAlloyName"
-                  className="border-gray-300 rounded-lg w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  defaultValue={standardAlloyName}
-                  readOnly
-                />
+                <p className="text-sm font-medium text-gray-700">Standard Alloy Name:</p>
+                <p>{standardAlloyName}</p>
               </div>
 
               <div>
-                <label htmlFor="standardAlloyCountry" className="block text-sm font-medium text-gray-700 mb-1">
-                  Standard Alloy Country
-                </label>
-                <input
-                  type="text"
-                  id="standardAlloyCountry"
-                  className="border-gray-300 rounded-lg w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  defaultValue={standardAlloyCountry}
-                  readOnly
-                />
+                <p className="text-sm font-medium text-gray-700">Standard Alloy Country:</p>
+                <p>{standardAlloyCountry}</p>
               </div>
             </div>
           </div>
         )}
 
-        {/* Static Dropdown Field for Part Attachments */}
+        {/* Part Attachments */}
         <div className="mb-4">
-          <label htmlFor="partAttachments" className="block text-sm font-medium text-gray-700 mb-1">
-            Part contains attachments:
-          </label>
-          <select
-            id="partAttachments"
-            className="border-gray-300 rounded-lg w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={partAttachments}
-            readOnly
-          >
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-          </select>
+          <p className="text-sm font-medium text-gray-700">Part contains attachments:</p>
+          <p>{partAttachments === 'yes' ? 'Yes' : 'No'}</p>
         </div>
 
         <div className="mb-4 grid grid-cols-2 gap-4">
           <div>
-            <label htmlFor="massInAir" className="block text-sm font-medium text-gray-700 mb-1">
-              Part's Mass in Air (CMa)
-            </label>
-            <input
-              type="text"
-              id="massInAir"
-              className="border-gray-300 rounded-lg w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              defaultValue={massInAir}
-              readOnly
-            />
+            <p className="text-sm font-medium text-gray-700">Part's Mass in Air (CMa):</p>
+            <p>{massInAir}</p>
           </div>
 
           <div>
-            <label htmlFor="massInFluid" className="block text-sm font-medium text-gray-700 mb-1">
-              Part's Mass in Fluid (CMf)
-            </label>
-            <input
-              type="text"
-              id="massInFluid"
-              className="border-gray-300 rounded-lg w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              defaultValue={massInFluid}
-              readOnly
-            />
+            <p className="text-sm font-medium text-gray-700">Part's Mass in Fluid (CMf):</p>
+            <p>{massInFluid}</p>
           </div>
 
           <div>
-            <label htmlFor="fluidDensity" className="block text-sm font-medium text-gray-700 mb-1">
-              Density of Fluid Used
-            </label>
-            <input
-              type="text"
-              id="fluidDensity"
-              className="border-gray-300 rounded-lg w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              defaultValue={fluidDensity}
-              readOnly
-            />
+            <p className="text-sm font-medium text-gray-700">Density of Fluid Used:</p>
+            <p>{fluidDensity}</p>
           </div>
 
           <div>
-            <label htmlFor="densityOfItem" className="block text-sm font-medium text-gray-700 mb-1">
-              Density of the Item
-            </label>
-            <input
-              type="text"
-              id="densityOfItem"
-              className="border-gray-300 rounded-lg w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              defaultValue={densityOfItem}
-              readOnly
-            />
+            <p className="text-sm font-medium text-gray-700">Density of the Item:</p>
+            <p>{densityOfItem}</p>
           </div>
         </div>
 
-        <div className="mb-4 grid grid-cols-2 gap-4">
-          <div>
-            <label htmlFor="compactnessRatio" className="block text-sm font-medium text-gray-700 mb-1">
-              Compactness Ratio
-            </label>
-            <input
-              type="text"
-              id="compactnessRatio"
-              className="border-gray-300 rounded-lg w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              defaultValue={compactnessRatio}
-              readOnly
-            />
-          </div>
-        </div>
-
-        {/* Additional Notes and Checkboxes */}
         <div className="mb-4">
-          <label htmlFor="optionalReport" className="block text-sm font-medium text-gray-700 mb-1">
-            Optional Report Elements
-          </label>
-          <input
-            type="checkbox"
-            id="optionalReport"
-            className="focus:ring-2 focus:ring-blue-500"
-            checked={optionalReport}
-            readOnly
-          />
+          <p className="text-sm font-medium text-gray-700">Compactness Ratio:</p>
+          <p>{compactnessRatio}</p>
         </div>
 
-        <div className="mb-6">
-          <label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-1">
-            Notes
-          </label>
-          <textarea
-            id="notes"
-            className="border-gray-300 rounded-lg w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            rows="4"
-            //defaultValue={notes}
-            placeholder='Add additional notes'
-            
-          />
-        </div>
+        {/* Additional Notes */}
+        {notes && (
+          <div className="mb-4">
+            <p className="text-sm font-medium text-gray-700">Notes:</p>
+            <textarea
+              value={notes}
+              onChange={handleNotesChange}
+              className="w-full mt-2 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              rows="4"
+              placeholder="Add any notes here..."
+            />
+          </div>
+        )}
+
+        {/* Master Sample Details */}
         {masterExists === 'yes' && (
           <div className="mb-4">
             <h2 className="text-lg font-semibold mb-2">Master Sample Details</h2>
             <div className="mb-4">
-              <label htmlFor="masterAttachmentExists" className="block text-sm font-medium text-gray-700 mb-1">
-                Master Sample has Attachment:
-              </label>
-              <input
-                type="text"
-                id="masterAttachmentExists"
-                className="border-gray-300 rounded-lg w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                defaultValue={masterAttachmentExists ? 'Yes' : 'No'}
-                readOnly
-              />
+              <p className="text-sm font-medium text-gray-700">Master Sample has Attachment:</p>
+              <p>{masterAttachmentExists ? 'Yes' : 'No'}</p>
             </div>
             <div className="mb-4">
-              <label htmlFor="densityOfMasterSample" className="block text-sm font-medium text-gray-700 mb-1">
-                Density of Master Sample:
-              </label>
-              <input
-                type="text"
-                id="densityOfMasterSample"
-                className="border-gray-300 rounded-lg w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                defaultValue={densityOfMasterSample}
-                readOnly
-              />
+              <p className="text-sm font-medium text-gray-700">Density of Master Sample:</p>
+              <p>{densityOfMasterSample}</p>
             </div>
           </div>
         )}
-
-        <button
-          onClick={() => window.history.back()}
-          className="bg-blue-500 text-white py-2 px-4 rounded-lg shadow-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          Go Back
-        </button>
       </div>
+
+      {/* Button to download the report as PDF */}
+      <button
+        onClick={handlePrintReport}
+        className="bg-blue-500 text-white py-2 px-4 rounded-lg shadow-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 mx-4 my-6"
+      >
+        Download Report
+      </button>
     </div>
   );
 }

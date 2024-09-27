@@ -91,7 +91,7 @@ function UserInput() {
         try {
           const response = await fetch(`http://localhost:4000/parts/compactness-ratio?partDensity=${partDensity}&theoreticalDensity=${theoreticalDensity}`);
           const data = await response.json();
-          setCompactnessRatio(data.compactnessRatio || '0');
+          setCompactnessRatio(data.compactnessRatio || 'Incorrect input, compactness ration cannot be greater than 100!');
           setPorosity(data.porosity || '0');
         } catch (error) {
           console.error('Error fetching compactness ratio and porosity:', error);

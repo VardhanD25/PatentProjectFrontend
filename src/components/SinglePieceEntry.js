@@ -22,6 +22,8 @@ function SinglePieceEntry({
   densityOfFluid,
   densityOfMasterSample
 }) {
+
+  
   const [showResults, setShowResults] = useState(false);
   const [composition, setComposition] = useState([]);
   const [standardAlloyId, setStandardAlloyId] = useState('');
@@ -125,7 +127,7 @@ function SinglePieceEntry({
         acc[item.element.symbol] = item.percentage;
         return acc;
       }, {}),
-      partAttachments: attachmentExists ? 'yes' : 'no',
+      partAttachments: attachmentExists==='yes' ? 'yes' : 'no',
       massInAir: partMassAir,
       massInFluid: partMassFluid,
       fluidDensity: densityOfFluid,
@@ -135,11 +137,15 @@ function SinglePieceEntry({
       standardAlloyCountry,
       standardAlloyName,
       optionalReport: true,
-      notes: 'No additional notes.'
+      notes:'',
     };
 
     navigate('/reportpage', { state: { reportData } });
   };
+
+  if (selectedPartCode==='Select part code' || !partName || !date) {
+    return <p>Please fill in the required fields in the previous steps to enter data on this screen.</p>;
+  }
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
@@ -155,7 +161,7 @@ function SinglePieceEntry({
               <h2 className="text-xl font-bold mb-2">Results</h2>
               <div className="bg-gray-50 p-4 rounded-lg shadow-md border border-gray-300">
                 <p><strong>Compactness Ratio:</strong> {compactnessRatio}</p>
-                <p><strong>Porosity:</strong> {porosity}</p>
+
               </div>
               <button
                 type="button"
@@ -164,13 +170,21 @@ function SinglePieceEntry({
               >
                 Edit Values
               </button>
-              <button
-                type="button"
-                onClick={handleShowReport}
-                className="bg-green-500 text-white px-4 py-2 rounded-lg mt-4 ml-4"
-              >
-                Show Report
-              </button>
+              {compactnessRatio !== 'Incorrect input, compactness ratio cannot be greater than 100!' && (
+  <div className="flex items-center mt-4">
+    <button
+      type="button"
+      onClick={handleShowReport}
+      className="bg-green-500 text-white px-4 py-2 rounded-lg"
+    >
+      Show Report
+    </button>
+    <p className="text-red-500 text-sm ml-4">
+      Verify entries before generating report, values cannot be edited later.
+    </p>
+  </div>
+)}
+
             </div>
           </div>
         ) : (
