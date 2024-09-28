@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation,useNavigate } from 'react-router-dom';
 import html2pdf from 'html2pdf.js';
 import './pageCSS/LotReportPage.css';
 
@@ -26,6 +26,11 @@ function LotReportPage() {
   } = location.state;
 
   const reportRef = useRef();
+  const navigate=useNavigate();
+
+  const handleGoToHome=()=>{
+    navigate('/')
+  }
 
   const handleDownloadReport = () => {
     const element = reportRef.current; // Capture the report content
@@ -42,9 +47,11 @@ function LotReportPage() {
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 font-poppins">
-      <div ref={reportRef} className="bg-white p-8 rounded-lg shadow-lg border-4 border-black max-w-5xl w-full mx-4 my-6" id="reportRef">
+      {/* Report Container */}
+      <div ref={reportRef} className="bg-white p-8 rounded-lg shadow-lg border-4 border-black max-w-5xl w-full mx-4 my-6">
         <h1 className="text-2xl font-bold text-center mb-6">Lot Report</h1>
 
+        {/* Form Elements */}
         <div className="mb-4 grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
@@ -67,6 +74,7 @@ function LotReportPage() {
           </div>
         </div>
 
+        {/* Additional Sections and Tables */}
         {chemicalComposition && Object.keys(chemicalComposition).length > 0 ? (
           <div className="mb-4">
             <h2 className="text-lg font-semibold mb-2">Chemical Composition (Weight %)</h2>
@@ -106,11 +114,13 @@ function LotReportPage() {
           </div>
         )}
 
+        {/* Additional Form Sections */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-1">Part contains attachments:</label>
           <p className="border-gray-300 rounded-lg w-full p-2 bg-gray-100">{partAttachments ? 'Yes' : 'No'}</p>
         </div>
 
+        {/* Report Table */}
         <div className="overflow-x-auto mb-6">
           <table className="min-w-full bg-white border border-gray-300">
             <thead className="bg-gray-50">
@@ -140,11 +150,7 @@ function LotReportPage() {
           </table>
         </div>
 
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">Optional Report Elements</label>
-          <p className="border-gray-300 rounded-lg w-full p-2 bg-gray-100">{optionalReport ? 'Yes' : 'No'}</p>
-        </div>
-
+        {/* Additional Notes Section */}
         <div className="mb-6">
           <label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
           <textarea
@@ -168,21 +174,29 @@ function LotReportPage() {
               )}
               {masterAttachmentExists && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Master Attachment Exists</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Master Sample contains attachment:</label>
                   <p className="border-gray-300 rounded-lg w-full p-2 bg-gray-100">Yes</p>
                 </div>
               )}
             </div>
           </div>
         )}
-      </div>
-      <div className="flex justify-center mb-4">
-        <button
-          onClick={handleDownloadReport}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300"
-        >
-          Download Report
-        </button>
+
+        {/* Action Buttons */}
+        <div className="flex justify-between">
+          <button
+            onClick={handleDownloadReport}
+            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg shadow-lg focus:outline-none"
+          >
+            Download Report
+          </button>
+          <button
+            onClick={handleGoToHome}
+            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg shadow-lg focus:outline-none"
+          >
+            Back to Home Page
+          </button>
+        </div>
       </div>
     </div>
   );

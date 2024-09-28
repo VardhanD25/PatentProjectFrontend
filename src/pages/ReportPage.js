@@ -1,7 +1,8 @@
 import React, { useState, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation,useNavigate } from 'react-router-dom';
 import html2pdf from 'html2pdf.js';
 import './pageCSS/ReportPage.css';
+import Navbar from '../components/Navbar';
 
 function ReportPage() {
   const location = useLocation();
@@ -28,10 +29,15 @@ function ReportPage() {
 
   const [notes, setNotes] = useState(initialNotes || ''); // Initialize state for notes
   const reportRef = useRef(); // Reference to the report div
+  const navigate=useNavigate();
 
   const handleNotesChange = (e) => {
     setNotes(e.target.value); // Update notes as user types
   };
+
+  const handleGoToHome=()=>{
+    navigate('/');
+  }
 
   // Function to handle printing the report as PDF
   const handlePrintReport = () => {
@@ -48,6 +54,7 @@ function ReportPage() {
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 font-poppins">
+      
       <div id="report-content" ref={reportRef} className="bg-white p-8 rounded-lg shadow-lg border-4 border-black max-w-4xl w-full mx-auto">
         <h1 className="text-2xl font-bold text-center mb-6">Report</h1>
 
@@ -181,12 +188,22 @@ function ReportPage() {
       </div>
 
       {/* Button to download the report as PDF */}
-      <button
-        onClick={handlePrintReport}
-        className="bg-blue-500 text-white py-2 px-4 rounded-lg shadow-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 mx-4 my-6"
-      >
-        Download Report
-      </button>
+      <div className="flex flex-col items-center mt-6 pr-8">
+  <button
+    onClick={handlePrintReport}
+    className="bg-blue-500 text-white py-2 px-4 rounded-lg shadow-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
+  >
+    Download Report
+  </button>
+  <button 
+    onClick={handleGoToHome}
+    className="bg-blue-500 text-white py-2 px-4 rounded-lg shadow-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+  >
+    Back to Home Page
+  </button>
+</div>
+
+
     </div>
   );
 }
