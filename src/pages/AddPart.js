@@ -1,7 +1,7 @@
+// src/components/AddPart.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
-import './pageCSS/AddPart.css';
 
 const AddPart = () => {
   const [partCode, setPartCode] = useState('');
@@ -12,9 +12,9 @@ const AddPart = () => {
   const [userId, setUserId] = useState('');
   const [elementSymbols, setElementSymbols] = useState([]);
   const [selectedSymbols, setSelectedSymbols] = useState(new Set());
-  const [standardAlloys, setStandardAlloys] = useState([]); // State for standard alloys
-  const [selectedStandardAlloy, setSelectedStandardAlloy] = useState(''); // State for selected standard alloy
-  const [useStandardAlloy, setUseStandardAlloy] = useState(false); // State to determine if standard alloy is used
+  const [standardAlloys, setStandardAlloys] = useState([]);
+  const [selectedStandardAlloy, setSelectedStandardAlloy] = useState('');
+  const [useStandardAlloy, setUseStandardAlloy] = useState(false);
   const navigate = useNavigate();
 
   const getEmailFromLocalStorage = () => {
@@ -103,7 +103,7 @@ const AddPart = () => {
     setComposition(newComposition);
 
     if (removedSymbol) {
-      setSelectedSymbols(prevSymbols => {
+      setSelectedSymbols((prevSymbols) => {
         const updatedSymbols = new Set(prevSymbols);
         updatedSymbols.delete(removedSymbol);
         return updatedSymbols;
@@ -117,7 +117,7 @@ const AddPart = () => {
 
     if (field === 'symbol') {
       if (oldSymbol && oldSymbol !== value) {
-        setSelectedSymbols(prevSymbols => {
+        setSelectedSymbols((prevSymbols) => {
           const updatedSymbols = new Set(prevSymbols);
           updatedSymbols.delete(oldSymbol);
           return updatedSymbols;
@@ -125,7 +125,7 @@ const AddPart = () => {
       }
 
       if (value && !selectedSymbols.has(value)) {
-        setSelectedSymbols(prevSymbols => new Set(prevSymbols.add(value)));
+        setSelectedSymbols((prevSymbols) => new Set(prevSymbols.add(value)));
       }
     }
 
@@ -161,9 +161,9 @@ const AddPart = () => {
         const response = await fetch('http://localhost:4000/parts/', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ partCode, partName, userId, standardAlloyId: selectedStandardAlloy })
+          body: JSON.stringify({ partCode, partName, userId, standardAlloyId: selectedStandardAlloy }),
         });
 
         if (response.ok) {
@@ -185,7 +185,7 @@ const AddPart = () => {
       }
     } else {
       // Validation: Ensure all elements have a symbol
-      const hasUnselectedSymbols = composition.some(el => !el.symbol);
+      const hasUnselectedSymbols = composition.some((el) => !el.symbol);
       if (hasUnselectedSymbols) {
         setErrorMessage('All elements must have a selected symbol.');
         return;
@@ -203,9 +203,9 @@ const AddPart = () => {
         const response = await fetch('http://localhost:4000/parts/', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ partCode, partName, composition, userId })
+          body: JSON.stringify({ partCode, partName, composition, userId }),
         });
 
         if (response.ok) {
@@ -229,124 +229,202 @@ const AddPart = () => {
   };
 
   return (
-    <div className="add-part-container">
+    <div className="min-h-screen flex flex-col bg-brand-light font-poppins">
+      {/* Navbar */}
       <Navbar />
-      <div className="add-part-content">
-        <h2 className="add-part-title">Add Part</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="input-group">
-            <label className="input-label">Part Code:</label>
-            <input
-              type="text"
-              value={partCode}
-              onChange={(e) => setPartCode(e.target.value)}
-              className="input-field"
-              required
-            />
-          </div>
-          <div className="input-group">
-            <label className="input-label">Part Name:</label>
-            <input
-              type="text"
-              value={partName}
-              onChange={(e) => setPartName(e.target.value)}
-              className="input-field"
-              required
-            />
-          </div>
-
-          <div className="input-group">
-            <label className="input-label">Use Standard Alloy:</label>
-            <input
-              type="checkbox"
-              checked={useStandardAlloy}
-              onChange={(e) => setUseStandardAlloy(e.target.checked)}
-            />
-          </div>
-
-          {useStandardAlloy ? (
-            <div className="input-group">
-              <label className="input-label">Select Standard Alloy:</label>
-              <select
-                value={selectedStandardAlloy}
-                onChange={(e) => setSelectedStandardAlloy(e.target.value)}
-                className="input-field"
+      <br />
+      <br />
+      <br />
+      
+      {/* Main Content */}
+      <main className="flex-grow p-8">
+        <div className="max-w-4xl mx-auto bg-white bg-opacity-20 backdrop-blur-sm rounded-xl shadow-lg p-8 border border-brand-lighter hover:shadow-2xl transition duration-300">
+          <h2 className="text-3xl font-semibold mb-6 text-brand-dark hover:text-brand-primary transition duration-300 text-center">
+            Add Part
+          </h2>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Part Code Field */}
+            <div>
+              <label htmlFor="partCode" className="block text-sm font-medium text-gray-700 mb-1">
+                Part Code:
+              </label>
+              <input
+                type="text"
+                id="partCode"
+                value={partCode}
+                onChange={(e) => setPartCode(e.target.value)}
+                className="p-3 rounded-lg border border-brand-lighter w-full bg-white bg-opacity-50 focus:outline-none focus:ring-2 focus:ring-brand-primary transition duration-300"
                 required
-              >
-                <option value="">Select Standard Alloy</option>
-                {standardAlloys.map(alloy => (
-                  <option key={alloy._id} value={alloy._id}>
-                    {alloy.name}
-                  </option>
-                ))}
-              </select>
+                placeholder="Enter unique part code"
+              />
             </div>
-          ) : (
-            <div className="input-group">
-              <label className="input-label">Composition:</label>
-              <div className="element-list">
-                {composition.map((element, index) => (
-                  <div key={index} className="element-item">
-                    <select
-                      value={element.symbol}
-                      onChange={(e) =>
-                        handleCompositionChange(index, 'symbol', e.target.value)
-                      }
-                      className="input-field"
-                      required
-                    >
-                      <option value="">Select Symbol</option>
-                      {elementSymbols
-                        .filter(symbol => !selectedSymbols.has(symbol) || symbol === element.symbol)
-                        .map(symbol => (
-                          <option key={symbol} value={symbol}>
-                            {symbol}
-                          </option>
-                        ))}
-                    </select>
-                    <input
-                      type="number"
-                      placeholder="Percentage"
-                      value={element.percentage}
-                      onChange={(e) =>
-                        handleCompositionChange(index, 'percentage', e.target.value)
-                      }
-                      className="input-field"
-                      required
-                      min="0"
-                      max="100"
-                    />
-                    {index > 0 && (
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveElement(index)}
-                        className="remove-btn"
-                      >
-                        Remove
-                      </button>
-                    )}
-                  </div>
-                ))}
+
+            {/* Part Name Field */}
+            <div>
+              <label htmlFor="partName" className="block text-sm font-medium text-gray-700 mb-1">
+                Part Name:
+              </label>
+              <input
+                type="text"
+                id="partName"
+                value={partName}
+                onChange={(e) => setPartName(e.target.value)}
+                className="p-3 rounded-lg border border-brand-lighter w-full bg-white bg-opacity-50 focus:outline-none focus:ring-2 focus:ring-brand-primary transition duration-300"
+                required
+                placeholder="Enter part name"
+              />
+            </div>
+
+            {/* Use Standard Alloy Checkbox */}
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                id="useStandardAlloy"
+                checked={useStandardAlloy}
+                onChange={(e) => setUseStandardAlloy(e.target.checked)}
+                className="h-4 w-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary"
+              />
+              <label htmlFor="useStandardAlloy" className="ml-2 block text-sm text-gray-700">
+                Use Standard Alloy
+              </label>
+            </div>
+
+            {/* Conditional Rendering: Standard Alloy Selection */}
+            {useStandardAlloy ? (
+              <div>
+                <label htmlFor="standardAlloy" className="block text-sm font-medium text-gray-700 mb-1">
+                  Select Standard Alloy:
+                </label>
+                <select
+                  id="standardAlloy"
+                  value={selectedStandardAlloy}
+                  onChange={(e) => setSelectedStandardAlloy(e.target.value)}
+                  className="p-3 rounded-lg border border-brand-lighter w-full bg-white bg-opacity-50 focus:outline-none focus:ring-2 focus:ring-brand-primary transition duration-300"
+                  required
+                >
+                  <option value="">Select Standard Alloy</option>
+                  {standardAlloys.map((alloy) => (
+                    <option key={alloy._id} value={alloy._id}>
+                      {alloy.name}
+                    </option>
+                  ))}
+                </select>
               </div>
+            ) : (
+              /* Composition Fields */
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Composition:</label>
+                <div className="space-y-6">
+                  {composition.map((element, index) => (
+                    <div key={index} className="flex flex-col space-y-2">
+                      {/* Inputs Row */}
+                      <div className="flex space-x-4">
+                        {/* Element Symbol Dropdown */}
+                        <div className="flex-1">
+                          <select
+                            value={element.symbol}
+                            onChange={(e) => handleCompositionChange(index, 'symbol', e.target.value)}
+                            className={`p-3 rounded-lg border border-brand-lighter w-full bg-white bg-opacity-50 focus:outline-none focus:ring-2 focus:ring-brand-primary transition duration-300 ${
+                              !element.symbol && errorMessage.includes('selected symbol') ? 'border-red-500' : ''
+                            }`}
+                            required
+                          >
+                            <option value="">Select Symbol</option>
+                            {elementSymbols
+                              .filter((symbol) => !selectedSymbols.has(symbol) || symbol === element.symbol)
+                              .map((symbol) => (
+                                <option key={symbol} value={symbol}>
+                                  {symbol}
+                                </option>
+                              ))}
+                          </select>
+                        </div>
+
+                        {/* Percentage Input */}
+                        <div className="flex-1">
+                          <input
+                            type="number"
+                            value={element.percentage}
+                            onChange={(e) => handleCompositionChange(index, 'percentage', e.target.value)}
+                            className={`p-3 rounded-lg border border-brand-lighter w-full bg-white bg-opacity-50 focus:outline-none focus:ring-2 focus:ring-brand-primary transition duration-300 ${
+                              errorMessage.includes('percentage') ? 'border-red-500' : ''
+                            }`}
+                            placeholder="Percentage"
+                            min="0"
+                            max="100"
+                            required
+                          />
+                        </div>
+                      </div>
+
+                      {/* Remove Button */}
+                      {index > 0 && (
+                        <div className="flex justify-end">
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveElement(index)}
+                            className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition duration-300"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Add Element Button */}
+                <div className="flex justify-center">
+                  <button
+                    type="button"
+                    onClick={handleAddElement}
+                    className="mt-4 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition duration-300"
+                  >
+                    Add Element
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Error Message */}
+            {errorMessage && (
+              <p className="text-red-500 text-center">
+                {errorMessage}
+              </p>
+            )}
+
+            {/* Submit Button */}
+            <div className="text-center">
               <button
-                type="button"
-                onClick={handleAddElement}
-                className="add-element-btn"
+                type="submit"
+                className="mt-4 w-full py-3 rounded-lg bg-brand-primary text-white font-semibold hover:bg-brand-dark transition duration-300"
               >
-                Add Element
+                Add Part
               </button>
             </div>
-          )}
+          </form>
+        </div>
+      </main>
 
-          {errorMessage && <p className="validation-message">{errorMessage}</p>}
-          <button
-            type="submit"
-            className="submit-btn"
-          >
-            Add Part
-          </button>
-        </form>
-      </div>
+      {/* Footer */}
+      <footer className="bg-brand-dark text-white py-6">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <p className="mb-4 md:mb-0">&copy; {new Date().getFullYear()} Compactness Calculator. All rights reserved.</p>
+            <div className="flex space-x-4">
+              <a href="/privacy" className="hover:text-brand-primary transition duration-300">
+                Privacy Policy
+              </a>
+              <a href="/terms" className="hover:text-brand-primary transition duration-300">
+                Terms of Service
+              </a>
+              <a href="/contact" className="hover:text-brand-primary transition duration-300">
+                Contact
+              </a>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };

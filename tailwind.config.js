@@ -1,14 +1,25 @@
-/** @type {import('tailwindcss').Config} */
 // tailwind.config.js
 module.exports = {
-  purge: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
-  darkMode: false, // or 'media' or 'class'
+  content: [
+    "./src/**/*.{js,jsx,ts,tsx}",
+  ],
   theme: {
-    extend: {},
-  },
-  variants: {
-    extend: {},
+    extend: {
+      colors: {
+        brand: {
+          light: '#F9F7F7',
+          lighter: '#DBE2EF',
+          primary: '#3F72AF',
+          dark: '#112D4E',
+        },
+      },
+      fontFamily: {
+        poppins: ['"Poppins"', 'sans-serif'],
+      },
+      backdropBlur: {
+        xs: '2px',
+      },
+    },
   },
   plugins: [],
-}
-
+};

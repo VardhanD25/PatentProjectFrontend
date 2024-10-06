@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+// src/components/SecondEntry.jsx
+import React, { useEffect } from 'react';
+import Navbar from "../components/Navbar"; // Ensure Navbar is imported
 
 function SecondEntry({ 
   attachmentExists, 
@@ -19,7 +21,8 @@ function SecondEntry({
   densityOfFluid,
   onMassOfFluidChange,
   onVolumeOfFluidChange,
-  onDensityOfFluidChange  
+  onDensityOfFluidChange,
+ 
 }) {
   useEffect(() => {
     if (massOfFluid && volumeOfFluid && volumeOfFluid !== '0') {
@@ -82,135 +85,182 @@ function SecondEntry({
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100 font-poppins">
-      <div className="max-w-md w-full my-8">
-        <h1 className="text-2xl font-bold text-center mb-6">Second Entry Screen</h1>
-        <form className="bg-white p-8 rounded-lg shadow-lg border-4 border-black">
-          <div className="mb-4">
-            <label htmlFor="mass-of-fluid" className="block text-sm font-medium text-gray-700 mb-1">
-              Mass of Fluid (grams)
-            </label>
-            <input
-              type="number"
-              id="mass-of-fluid"
-              value={massOfFluid}
-              onChange={handleMassOfFluidChange}
-              className="border-gray-300 rounded-lg w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter mass of fluid"
-              min="0"
-              step="any"
-            />
-          </div>
-          <div className="mb-4">
-            <label htmlFor="volume-of-fluid" className="block text-sm font-medium text-gray-700 mb-1">
-              Volume of Fluid (cm³)
-            </label>
-            <input
-              type="number"
-              id="volume-of-fluid"
-              value={volumeOfFluid}
-              onChange={handleVolumeOfFluidChange}
-              className="border-gray-300 rounded-lg w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter volume of fluid"
-              min="0"
-              step="any"
-            />
-          </div>
-          <div className="mb-4">
-            <label htmlFor="density-of-fluid" className="block text-sm font-medium text-gray-700 mb-1">
-              Density of Fluid (grams/cm³)
-            </label>
-            <input
-              type="text"
-              id="density-of-fluid"
-              value={densityOfFluid}
-              readOnly
-              className="border-gray-300 rounded-lg w-full p-2 bg-gray-200"
-            />
-          </div>
-          {(attachmentExists==="yes" || masterAttachmentExists==="yes") && (
-            <>
-          <div className="mb-4">
-            <label htmlFor="attachment-mass-air" className="block text-sm font-medium text-gray-700 mb-1">
-              Attachment Mass in Air (grams)
-            </label>
-            <input
-              type="number"
-              id="attachment-mass-air"
-              value={attachmentMassAir}
-              onChange={handleAttachmentMassAirChange}
-              className="border-gray-300 rounded-lg w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter attachment mass in air"
-              min="0"
-              step="any"
-            />
-          </div>
-          
-          <div className="mb-4">
-            <label htmlFor="attachment-mass-fluid" className="block text-sm font-medium text-gray-700 mb-1">
-              Attachment Mass in Fluid (grams)
-            </label>
-            <input
-              type="number"
-              id="attachment-mass-fluid"
-              value={attachmentMassFluid}
-              onChange={handleAttachmentMassFluidChange}
-              className="border-gray-300 rounded-lg w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter attachment mass in fluid"
-              min="0"
-              step="any"
-            />
-          </div>
-          </>
-          )}
-          {masterExists === 'yes' && (
-            <>
-              <div className="mb-4">
-                <label htmlFor="master-sample-mass-air" className="block text-sm font-medium text-gray-700 mb-1">
-                  Master Sample Mass in Air (grams)
+    <div className="flex flex-col min-h-screen bg-brand-light font-poppins">
+      {/* Navbar */}
+      <Navbar />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      {/* Spacer to push content below Navbar */}
+      <div className="flex-grow p-8">
+        <div className="max-w-2xl mx-auto grid gap-12">
+          {/* Form Container */}
+          <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-xl shadow-lg p-8 border border-brand-lighter hover:shadow-2xl transition duration-300">
+            <h2 className="text-3xl font-semibold mb-6 text-brand-dark hover:text-brand-primary transition duration-300 text-center">
+              Second Entry Screen
+            </h2>
+            <form>
+              {/* Mass of Fluid Field */}
+              <div className="mb-6">
+                <label htmlFor="mass-of-fluid" className="block text-sm font-medium text-gray-700 mb-2">
+                  Mass of Fluid (grams)
                 </label>
                 <input
                   type="number"
-                  id="master-sample-mass-air"
-                  value={masterSampleMassAir}
-                  onChange={handleMasterSampleMassAirChange}
-                  className="border-gray-300 rounded-lg w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter master sample mass in air"
+                  id="mass-of-fluid"
+                  value={massOfFluid}
+                  onChange={handleMassOfFluidChange}
+                  className="border border-brand-lighter rounded-lg w-full p-3 bg-white focus:outline-none focus:ring-2 focus:ring-brand-primary transition duration-300"
+                  placeholder="Enter mass of fluid"
                   min="0"
                   step="any"
                 />
               </div>
-              <div className="mb-4">
-                <label htmlFor="master-sample-mass-fluid" className="block text-sm font-medium text-gray-700 mb-1">
-                  Master Sample Mass in Fluid (grams)
+
+              {/* Volume of Fluid Field */}
+              <div className="mb-6">
+                <label htmlFor="volume-of-fluid" className="block text-sm font-medium text-gray-700 mb-2">
+                  Volume of Fluid (cm³)
                 </label>
                 <input
                   type="number"
-                  id="master-sample-mass-fluid"
-                  value={masterSampleMassFluid}
-                  onChange={handleMasterSampleMassFluidChange}
-                  className="border-gray-300 rounded-lg w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter master sample mass in fluid"
+                  id="volume-of-fluid"
+                  value={volumeOfFluid}
+                  onChange={handleVolumeOfFluidChange}
+                  className="border border-brand-lighter rounded-lg w-full p-3 bg-white focus:outline-none focus:ring-2 focus:ring-brand-primary transition duration-300"
+                  placeholder="Enter volume of fluid"
                   min="0"
                   step="any"
                 />
               </div>
-              <div className="mb-4">
-                <label htmlFor="density-of-master-sample" className="block text-sm font-medium text-gray-700 mb-1">
-                  Density of Master Sample (grams/cm³)
+
+              {/* Density of Fluid Field */}
+              <div className="mb-6">
+                <label htmlFor="density-of-fluid" className="block text-sm font-medium text-gray-700 mb-2">
+                  Density of Fluid (grams/cm³)
                 </label>
                 <input
                   type="text"
-                  id="density-of-master-sample"
-                  value={densityMasterSample}
+                  id="density-of-fluid"
+                  value={densityOfFluid}
                   readOnly
-                  className="border-gray-300 rounded-lg w-full p-2 bg-gray-200"
+                  className="border border-brand-lighter rounded-lg w-full p-3 bg-gray-200 cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-brand-primary transition duration-300"
+                  placeholder="Density of fluid will be calculated"
                 />
               </div>
-            </>
-          )}
-        </form>
+
+              {/* Conditional Fields for Attachments */}
+              {(attachmentExists === "yes" || masterAttachmentExists === "yes") && (
+                <>
+                  {/* Attachment Mass in Air Field */}
+                  <div className="mb-6">
+                    <label htmlFor="attachment-mass-air" className="block text-sm font-medium text-gray-700 mb-2">
+                      Attachment Mass in Air (grams)
+                    </label>
+                    <input
+                      type="number"
+                      id="attachment-mass-air"
+                      value={attachmentMassAir}
+                      onChange={handleAttachmentMassAirChange}
+                      className="border border-brand-lighter rounded-lg w-full p-3 bg-white focus:outline-none focus:ring-2 focus:ring-brand-primary transition duration-300"
+                      placeholder="Enter attachment mass in air"
+                      min="0"
+                      step="any"
+                    />
+                  </div>
+
+                  {/* Attachment Mass in Fluid Field */}
+                  <div className="mb-6">
+                    <label htmlFor="attachment-mass-fluid" className="block text-sm font-medium text-gray-700 mb-2">
+                      Attachment Mass in Fluid (grams)
+                    </label>
+                    <input
+                      type="number"
+                      id="attachment-mass-fluid"
+                      value={attachmentMassFluid}
+                      onChange={handleAttachmentMassFluidChange}
+                      className="border border-brand-lighter rounded-lg w-full p-3 bg-white focus:outline-none focus:ring-2 focus:ring-brand-primary transition duration-300"
+                      placeholder="Enter attachment mass in fluid"
+                      min="0"
+                      step="any"
+                    />
+                  </div>
+                </>
+              )}
+
+              {/* Conditional Fields for Master Sample */}
+              {masterExists === 'yes' && (
+                <>
+                  {/* Master Sample Mass in Air Field */}
+                  <div className="mb-6">
+                    <label htmlFor="master-sample-mass-air" className="block text-sm font-medium text-gray-700 mb-2">
+                      Master Sample Mass in Air (grams)
+                    </label>
+                    <input
+                      type="number"
+                      id="master-sample-mass-air"
+                      value={masterSampleMassAir}
+                      onChange={handleMasterSampleMassAirChange}
+                      className="border border-brand-lighter rounded-lg w-full p-3 bg-white focus:outline-none focus:ring-2 focus:ring-brand-primary transition duration-300"
+                      placeholder="Enter master sample mass in air"
+                      min="0"
+                      step="any"
+                    />
+                  </div>
+
+                  {/* Master Sample Mass in Fluid Field */}
+                  <div className="mb-6">
+                    <label htmlFor="master-sample-mass-fluid" className="block text-sm font-medium text-gray-700 mb-2">
+                      Master Sample Mass in Fluid (grams)
+                    </label>
+                    <input
+                      type="number"
+                      id="master-sample-mass-fluid"
+                      value={masterSampleMassFluid}
+                      onChange={handleMasterSampleMassFluidChange}
+                      className="border border-brand-lighter rounded-lg w-full p-3 bg-white focus:outline-none focus:ring-2 focus:ring-brand-primary transition duration-300"
+                      placeholder="Enter master sample mass in fluid"
+                      min="0"
+                      step="any"
+                    />
+                  </div>
+
+                  {/* Density of Master Sample Field */}
+                  <div className="mb-6">
+                    <label htmlFor="density-of-master-sample" className="block text-sm font-medium text-gray-700 mb-2">
+                      Density of Master Sample (grams/cm³)
+                    </label>
+                    <input
+                      type="text"
+                      id="density-of-master-sample"
+                      value={densityMasterSample}
+                      readOnly
+                      className="border border-brand-lighter rounded-lg w-full p-3 bg-gray-200 cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-brand-primary transition duration-300"
+                      placeholder="Density of master sample will be calculated"
+                    />
+                  </div>
+                </>
+              )}
+            </form>
+          </div>
+        </div>
       </div>
+
+      {/* Footer */}
+      <footer className="bg-brand-dark text-white py-6">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <p className="mb-4 md:mb-0">&copy; {new Date().getFullYear()} Compactness Calculator. All rights reserved.</p>
+            <div className="flex space-x-4">
+              <a href="/privacy" className="hover:text-brand-primary transition duration-300">Privacy Policy</a>
+              <a href="/terms" className="hover:text-brand-primary transition duration-300">Terms of Service</a>
+              <a href="/contact" className="hover:text-brand-primary transition duration-300">Contact</a>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
