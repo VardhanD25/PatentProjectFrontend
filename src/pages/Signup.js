@@ -1,7 +1,6 @@
-// src/components/Signup.jsx
 import { useState } from "react";
 import { useSignup } from "../hooks/useSignup";
-import { Link } from "react-router-dom";
+import Navbar from "../components/Navbar";
 
 const Signup = () => {
   const [name, setName] = useState('');

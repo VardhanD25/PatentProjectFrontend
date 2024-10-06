@@ -2,13 +2,13 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar'; // Ensure Navbar is imported
 
-function FirstEntry({ 
-  partCodes, 
-  onPartCodeChange, 
-  partName, 
-  selectedDate, 
+function FirstEntry({
+  partCodes,
+  onPartCodeChange,
+  partName,
+  selectedDate,
   onDateChange,
-  singleOrLot, 
+  singleOrLot,
   onSingleOrLotChange,
   densityType,
   onDensityTypeChange,

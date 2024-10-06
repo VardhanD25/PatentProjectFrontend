@@ -1,6 +1,7 @@
 // src/components/Login.jsx
 import { useState } from "react";
 import { useLogin } from "../hooks/useLogin";
+import Navbar from "../components/Navbar";
 
 const Login = () => {
   const [email, setEmail] = useState('');

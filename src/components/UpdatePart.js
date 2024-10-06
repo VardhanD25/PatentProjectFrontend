@@ -8,6 +8,7 @@ const UpdatePart = ({ selectedPartCode, onSave, onClose }) => {
   const [composition, setComposition] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [totalPercentage, setTotalPercentage] = useState(0); // State to track total percentage
 
   const navigate = useNavigate();
 
@@ -19,14 +20,14 @@ const UpdatePart = ({ selectedPartCode, onSave, onClose }) => {
 
         if (response.ok) {
           setPart(data.part);
-          setComposition(
-            data.part.composition.map(item => ({
-              ...item,
-              element: {
-                symbol: item.element.symbol || '' // Ensure symbol is correctly assigned
-              }
-            })) || []
-          );
+          const initialComposition = data.part.composition.map(item => ({
+            ...item,
+            element: {
+              symbol: item.element.symbol || '' // Ensure symbol is correctly assigned
+            }
+          })) || [];
+          setComposition(initialComposition);
+          calculateTotalPercentage(initialComposition); // Calculate total initially
         } else {
           setError(data.message || 'Error fetching part response');
         }
@@ -39,6 +40,11 @@ const UpdatePart = ({ selectedPartCode, onSave, onClose }) => {
 
     fetchPart();
   }, [selectedPartCode]);
+
+  const calculateTotalPercentage = (updatedComposition) => {
+    const total = updatedComposition.reduce((sum, item) => sum + (parseFloat(item.percentage) || 0), 0);
+    setTotalPercentage(total);
+  };
 
   const handleCompositionChange = (index, field, value) => {
     const updatedComposition = [...composition];
@@ -54,9 +60,15 @@ const UpdatePart = ({ selectedPartCode, onSave, onClose }) => {
       updatedComposition[index] = { ...updatedComposition[index], [field]: value };
     }
     setComposition(updatedComposition);
+    calculateTotalPercentage(updatedComposition); // Recalculate total after change
   };
 
   const handleSave = async () => {
+    if (totalPercentage !== 100) {
+      alert('The total percentage of all elements must add up to 100% before saving.');
+      return;
+    }
+
     try {
       const response = await fetch("http://localhost:4000/parts/updatePart", {
         method: 'PATCH',

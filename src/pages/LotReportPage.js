@@ -131,7 +131,7 @@ function LotReportPage() {
                 <th className="py-2 px-4 border-b">Density of Fluid (g/cm³)</th>
                 <th className="py-2 px-4 border-b">Density of Master Sample (g/cm³)</th>
                 <th className="py-2 px-4 border-b">Compactness Ratio</th>
-                {porosityArray && <th className="py-2 px-4 border-b">Porosity</th>}
+                {/* {porosityArray && <th className="py-2 px-4 border-b">Porosity</th>} */}
               </tr>
             </thead>
             <tbody>
@@ -143,7 +143,7 @@ function LotReportPage() {
                   <td className="py-2 px-4 border-b">{fluidDensity}</td>
                   <td className="py-2 px-4 border-b">{densityOfItem}</td>
                   <td className="py-2 px-4 border-b">{compactnessRatio[index]}</td>
-                  {porosityArray && <td className="py-2 px-4 border-b">{porosityArray[index]}</td>}
+                  {/* {porosityArray && <td className="py-2 px-4 border-b">{porosityArray[index]}</td>} */}
                 </tr>
               ))}
             </tbody>
