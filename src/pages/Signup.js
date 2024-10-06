@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useSignup } from "../hooks/useSignup";
 import Navbar from "../components/Navbar";
+import { Link } from "react-router-dom";
 
 const Signup = () => {
   const [name, setName] = useState('');
@@ -23,6 +24,7 @@ const Signup = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-brand-light font-poppins">
+      
       <div className="bg-white bg-opacity-20 backdrop-blur-xs rounded-xl shadow-lg p-8 max-w-md w-full border border-brand-lighter">
         <form className="flex flex-col space-y-6" onSubmit={handleSubmit}>
           <h3 className="text-2xl font-semibold text-brand-dark text-center font-poppins">Sign Up</h3>

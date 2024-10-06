@@ -166,6 +166,9 @@ const UpdatePart = ({ selectedPartCode, onSave, onClose }) => {
                   ))}
                 </tbody>
               </table>
+              <p className={totalPercentage !== 100 ? 'error-message' : 'success-message'}>
+                Total percentage: {totalPercentage}% (should equal 100%)
+              </p>
               <div className="flex justify-end space-x-4 mt-6">
                 <button
                   className="bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-green-600 transition duration-300"
