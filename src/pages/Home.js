@@ -1,7 +1,22 @@
 // src/pages/Home.jsx
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import profile from "./pic.jpg"
+import profile from "./pic.jpg";
+import { useAuthContext } from '../hooks/useAuthContext'; // Import the useAuthContext hook
+
 const Home = () => {
+    const { user } = useAuthContext(); // Check if the user is logged in
+    const navigate = useNavigate();
+
+    const handleGetStarted = () => {
+        if (user) {
+            navigate("/userinput"); // Navigate to user input if logged in
+        } else {
+            navigate("/login"); // Redirect to login if not logged in
+        }
+    };
+
     return (
         <div className="min-h-screen flex flex-col bg-brand-light font-poppins">
             {/* Navbar */}
@@ -11,21 +26,21 @@ const Home = () => {
             <section className="relative bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url('/path-to-your-hero-image.jpg')` }}>
                 <div className="absolute inset-0 bg-sky-950 backdrop-blur-sm"></div>
                 <div className="relative z-10 flex items-center justify-center min-h-[60vh] px-4">
-                    <div className="text-center text-white max-w-2xl  animate-fadeIn">
+                    <div className="text-center text-white max-w-2xl animate-fadeIn">
                         <br />
                         <br />
                         <br />
                         <br />
-                        <h1 className="text-5xl md:text-6xl font-bold  mb-4">Optimize Your Material Selection</h1>
+                        <h1 className="text-5xl md:text-6xl font-bold mb-4">Optimize Your Material Selection</h1>
                         <p className="text-xl md:text-2xl mb-6">
                             Utilize our Compactness Calculator to make informed decisions in your engineering projects.
                         </p>
-                        <a
-                            href="/userinput"
+                        <button
+                            onClick={handleGetStarted} // Button calls handleGetStarted function
                             className="inline-block px-8 py-3 bg-brand-primary text-white font-semibold rounded-lg shadow-lg hover:bg-brand-dark transition transform hover:-translate-y-1 hover:shadow-2xl duration-300"
                         >
                             Get Started
-                        </a>
+                        </button>
                     </div>
                 </div>
             </section>
@@ -33,7 +48,6 @@ const Home = () => {
             {/* Main Content */}
             <main className="flex-grow p-8 bg-gradient-to-b from-brand-light to-brand-primary-light">
                 <div className="max-w-6xl mx-auto grid gap-16">
-                    
                     {/* Welcome Section */}
                     <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-xl shadow-lg p-8 border hover:shadow-2xl transition duration-300">
                         <h2 className="text-3xl font-bold mb-4 text-brand-dark hover:text-brand-primary transition duration-300">

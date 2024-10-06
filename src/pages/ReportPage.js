@@ -44,13 +44,15 @@ function ReportPage() {
   const handlePrintReport = () => {
     const element = reportRef.current; // Capture the report content
 
-    html2pdf(element, {
-      margin: [10, 10, 10, 10], // Adjust margins if needed
+    html2pdf().from(element).set({
+      margin: [10, 10, 10, 10],
       filename: 'report.pdf',
       image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true }, // Higher scale for better quality, CORS support
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }, // A4 page size
-    });
+      html2canvas: { scale: 2, useCORS: true, allowTaint: true },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak: { mode: ['avoid-all', 'css'] }  // Ensure proper page breaks
+    }).save();
+    
   };
 
   return (

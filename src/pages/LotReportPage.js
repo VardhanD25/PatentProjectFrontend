@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { useLocation,useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import html2pdf from 'html2pdf.js';
 import './pageCSS/LotReportPage.css';
 
@@ -26,23 +26,42 @@ function LotReportPage() {
   } = location.state;
 
   const reportRef = useRef();
-  const navigate=useNavigate();
+  const navigate = useNavigate();
 
-  const handleGoToHome=()=>{
-    navigate('/')
-  }
+  const handleGoToHome = () => {
+    navigate('/');
+  };
 
   const handleDownloadReport = () => {
-    const element = reportRef.current; // Capture the report content
-  
-    html2pdf().from(element).set({
-      margin: [10, 10, 10, 10], // Adjust margins if needed
-      filename: 'report.pdf',
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 1.5, useCORS: true, allowTaint: true }, // Higher scale for better quality
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }, // A4 page size
-      pagebreak: { mode: ['css', 'legacy'] }, // Handle page breaks based on CSS
-    }).save();
+    // Check for compactness ratio
+    const hasInvalidCompactness = compactnessRatio.some((ratio) => ratio <= 0);
+
+    if (hasInvalidCompactness) {
+      alert('Compactness ratio cannot be greater than 100. Please check your values.');
+      return; // Exit the function to prevent PDF generation
+    }
+
+    const element = reportRef.current;
+
+    // Apply zoom out
+    element.style.transform = 'scale(0.9)';
+    element.style.transformOrigin = 'top left';
+
+    html2pdf()
+      .from(element)
+      .set({
+        margin: [10, 10, 10, 10],
+        filename: 'report.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 1.5, useCORS: true, allowTaint: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+        pagebreak: { mode: ['avoid-all', 'css'] },
+      })
+      .save()
+      .then(() => {
+        // Reset the transform after generating the PDF
+        element.style.transform = 'none';
+      });
   };
 
   return (
@@ -150,7 +169,7 @@ function LotReportPage() {
           </table>
         </div>
 
-        {/* Additional Notes Section */}
+        {/* Additional Notes Section
         <div className="mb-6">
           <label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
           <textarea
@@ -159,7 +178,7 @@ function LotReportPage() {
             rows="4"
             placeholder="Add additional notes"
           />
-        </div>
+        </div> */}
 
         {/* Master Details Logic */}
         {(masterExists || masterAttachmentExists) && (

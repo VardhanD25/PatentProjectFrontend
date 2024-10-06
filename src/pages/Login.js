@@ -1,6 +1,7 @@
 // src/components/Login.jsx
 import { useState } from "react";
 import { useLogin } from "../hooks/useLogin";
+import { Link } from "react-router-dom"; // Import Link from react-router-dom
 import Navbar from "../components/Navbar";
 
 const Login = () => {
@@ -51,6 +52,16 @@ const Login = () => {
           
           {error && <div className="text-red-500 text-center font-poppins">{error}</div>}
         </form>
+
+        {/* Sign up link */}
+        <div className="text-center mt-4 font-poppins">
+          <p className="text-brand-dark">
+            Don't have an account?{' '}
+            <Link to="/signup" className="text-brand-primary font-semibold hover:underline">
+              Sign up now
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );
