@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 
-function FirstEntry({ 
-  partCodes, 
-  onPartCodeChange, 
-  partName, 
-  selectedDate, 
+function FirstEntry({
+  partCodes,
+  onPartCodeChange,
+  partName,
+  selectedDate,
   onDateChange,
-  singleOrLot, 
+  singleOrLot,
   onSingleOrLotChange,
   densityType,
   onDensityTypeChange,
@@ -20,7 +20,7 @@ function FirstEntry({
   selectedPartCode
 }) {
   const [date, setDate] = useState(selectedDate);
-  const [partCode, setPartCode] = useState(selectedPartCode ||'');
+  const [partCode, setPartCode] = useState(selectedPartCode || '');
   const [pieceOrLot, setPieceOrLot] = useState(singleOrLot);
   const [density, setDensity] = useState(densityType);
   const [attachment, setAttachment] = useState(attachmentExists);
@@ -98,7 +98,7 @@ function FirstEntry({
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100 font-poppins">
+    <div className="flex justify-center items-center min-h-screen bg-gray-200">
       <div className="max-w-md w-full my-8">
         <h1 className="text-2xl font-bold text-center mb-6">First Entry Screen</h1>
         <form className="bg-white p-8 rounded-lg shadow-lg border-4 border-black">
@@ -126,8 +126,10 @@ function FirstEntry({
               className="border-gray-300 rounded-lg w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="">Select part code</option>
-              {partCodes.map(code => (
-                <option key={code} value={code}>{code}</option>
+              {partCodes.map((code) => (
+                <option key={code} value={code}>
+                  {code}
+                </option>
               ))}
             </select>
           </div>
@@ -219,7 +221,10 @@ function FirstEntry({
           </div>
           {master === 'yes' && (
             <div className="mb-4">
-              <label htmlFor="master-attachment-exists" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="master-attachment-exists"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Does the master sample have attachments?
               </label>
               <select
