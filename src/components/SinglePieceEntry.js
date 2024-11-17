@@ -238,43 +238,53 @@ function SinglePieceEntry({
           </h2>
 
           {showResults ? (
-            <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-lg p-8 space-y-6 shadow-xl">
-              <h3 className="text-xl font-semibold text-slate-200 text-center">Results</h3>
-              
-              <div className="bg-slate-800/30 border border-slate-700/50 rounded-lg p-4 space-y-2">
-                <p><span className="text-slate-400">Compactness Ratio:</span> {compactnessRatio}</p>
-                <p><span className="text-slate-400">Porosity:</span> {porosity}</p>
-              </div>
+  <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-lg p-8 space-y-6 shadow-xl">
+    <h3 className="text-xl font-semibold text-slate-200 text-center">Results</h3>
+    
+    <div className="bg-slate-800/30 border border-slate-700/50 rounded-lg p-4 space-y-2">
+      <p><span className="text-slate-400">Compactness Ratio:</span> {compactnessRatio}</p>
+      
+      {/* Conditional Porosity Display */}
+      {masterExists === 'yes' ? (
+        <p>
+          <span className="text-slate-400">Porosity:</span> {porosity}%
+        </p>
+      ) : (
+        <p className="text-amber-500/80">
+          <span className="text-slate-400">Porosity:</span> Cannot be calculated (No master sample)
+        </p>
+      )}
+    </div>
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={handleToggleForm}
-                  className="px-6 py-2 rounded-lg bg-slate-800/50 border border-slate-700/50 text-slate-300 hover:bg-slate-800/70 hover:text-white transition-all duration-300"
-                >
-                  Edit Values
-                </motion.button>
+    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={handleToggleForm}
+        className="px-6 py-2 rounded-lg bg-slate-800/50 border border-slate-700/50 text-slate-300 hover:bg-slate-800/70 hover:text-white transition-all duration-300"
+      >
+        Edit Values
+      </motion.button>
 
-                {compactnessRatio !== 'Incorrect input, compactness ratio cannot be greater than 100!' && (
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={handleShowReport}
-                    className="px-6 py-2 rounded-lg bg-slate-200 text-slate-900 hover:bg-white transition-all duration-300"
-                  >
-                    Show Report
-                  </motion.button>
-                )}
-              </div>
+      {compactnessRatio !== 'Incorrect input, compactness ratio cannot be greater than 100!' && (
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={handleShowReport}
+          className="px-6 py-2 rounded-lg bg-slate-200 text-slate-900 hover:bg-white transition-all duration-300"
+        >
+          Show Report
+        </motion.button>
+      )}
+    </div>
 
-              {compactnessRatio !== 'Incorrect input, compactness ratio cannot be greater than 100!' && (
-                <p className="text-amber-500/80 text-sm text-center">
-                  Verify entries before generating report, values cannot be edited later.
-                </p>
-              )}
-            </div>
-          ) : (
+    {compactnessRatio !== 'Incorrect input, compactness ratio cannot be greater than 100!' && (
+      <p className="text-amber-500/80 text-sm text-center">
+        Verify entries before generating report, values cannot be edited later.
+      </p>
+    )}
+  </div>
+) : (
             <form className="bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-lg p-8 space-y-8 shadow-xl">
               {/* Part Mass in Air Field */}
               <div className="space-y-2">

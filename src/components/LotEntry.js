@@ -173,56 +173,75 @@ function LotEntry({
           </h2>
           
           {showResults ? (
-            <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-lg p-8 space-y-6 shadow-xl">
-              <h3 className="text-xl font-semibold text-slate-200">Results</h3>
-              
-              <div className="overflow-x-auto">
-                <table className="w-full border-collapse">
-                  <thead>
-                    <tr className="border-b border-slate-700/50">
-                      <th className="py-3 px-4 text-left text-slate-300 font-medium">Serial Number</th>
-                      <th className="py-3 px-4 text-left text-slate-300 font-medium">Mass in Air (g)</th>
-                      <th className="py-3 px-4 text-left text-slate-300 font-medium">Mass in Fluid (g)</th>
-                      <th className="py-3 px-4 text-left text-slate-300 font-medium">Density (g/cm³)</th>
-                      <th className="py-3 px-4 text-left text-slate-300 font-medium">Compactness</th>
-                      <th className="py-3 px-4 text-left text-slate-300 font-medium">Porosity</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {partMassAirArray.map((_, index) => (
-                      <tr key={index} className="border-b border-slate-700/30">
-                        <td className="py-3 px-4 text-slate-300">{index + 1}</td>
-                        <td className="py-3 px-4 text-slate-300">{partMassAirArray[index]}</td>
-                        <td className="py-3 px-4 text-slate-300">{partMassFluidArray[index]}</td>
-                        <td className="py-3 px-4 text-slate-300">{partDensityArray[index]}</td>
-                        <td className="py-3 px-4 text-slate-300">{compactnessRatioArray[index]}</td>
-                        <td className="py-3 px-4 text-slate-300">{porosityArray[index]}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+  <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-lg p-8 space-y-6 shadow-xl">
+    <h3 className="text-xl font-semibold text-slate-200">Results</h3>
+    
+    <div className="overflow-x-auto">
+      <table className="w-full border-collapse">
+        <thead>
+          <tr className="border-b border-slate-700/50">
+            <th className="py-3 px-4 text-left text-slate-300 font-medium">Serial Number</th>
+            <th className="py-3 px-4 text-left text-slate-300 font-medium">Mass in Air (g)</th>
+            <th className="py-3 px-4 text-left text-slate-300 font-medium">Mass in Fluid (g)</th>
+            <th className="py-3 px-4 text-left text-slate-300 font-medium">Density (g/cm³)</th>
+            <th className="py-3 px-4 text-left text-slate-300 font-medium">Compactness</th>
+            <th className="py-3 px-4 text-left text-slate-300 font-medium">Porosity</th>
+          </tr>
+        </thead>
+        <tbody>
+          {partMassAirArray.map((_, index) => (
+            <tr key={index} className="border-b border-slate-700/30">
+              <td className="py-3 px-4 text-slate-300">{index + 1}</td>
+              <td className="py-3 px-4 text-slate-300">{partMassAirArray[index]}</td>
+              <td className="py-3 px-4 text-slate-300">{partMassFluidArray[index]}</td>
+              <td className="py-3 px-4 text-slate-300">{partDensityArray[index]}</td>
+              <td className="py-3 px-4 text-slate-300">{compactnessRatioArray[index]}</td>
+              <td className="py-3 px-4 text-slate-300">
+                {masterExists === 'yes' ? (
+                  `${porosityArray[index]}%`
+                ) : (
+                  partDensityArray[index] === Math.max(...partDensityArray.map(d => parseFloat(d))).toString() ? (
+                    'Reference Part'
+                  ) : (
+                    `${porosityArray[index]}%`
+                  )
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
 
-              <div className="flex gap-4 justify-end pt-4">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={handleGoBack}
-                  className="px-6 py-2 rounded-lg bg-slate-800/50 border border-slate-700/50 text-slate-300 hover:bg-slate-800/70 hover:text-white transition-all duration-300"
-                >
-                  Edit Values
-                </motion.button>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={handleShowReport}
-                  className="px-6 py-2 rounded-lg bg-slate-200 text-slate-900 hover:bg-white transition-all duration-300"
-                >
-                  Show Report
-                </motion.button>
-              </div>
-            </div>
-          ) : (
+    {/* Add a note about porosity calculation method */}
+    <div className="text-sm text-amber-500/80 mt-4">
+      {masterExists === 'yes' ? (
+        <p>Porosity calculated using master sample as reference</p>
+      ) : (
+        <p>Porosity calculated using highest density part as reference</p>
+      )}
+    </div>
+
+    <div className="flex gap-4 justify-end pt-4">
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={handleGoBack}
+        className="px-6 py-2 rounded-lg bg-slate-800/50 border border-slate-700/50 text-slate-300 hover:bg-slate-800/70 hover:text-white transition-all duration-300"
+      >
+        Edit Values
+      </motion.button>
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={handleShowReport}
+        className="px-6 py-2 rounded-lg bg-slate-200 text-slate-900 hover:bg-white transition-all duration-300"
+      >
+        Show Report
+      </motion.button>
+    </div>
+  </div>
+) : (
             <div className="space-y-6">
               {validationMessage && (
                 <div className="bg-red-900/50 text-red-200 p-4 rounded-lg border border-red-500/50">

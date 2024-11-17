@@ -108,6 +108,87 @@ function UserInput() {
     }
   }, [partMassAir, partMassFluid,theoreticalDensity, partDensity, submitClicked]);
 
+  // ... existing code ...
+
+useEffect(() => {
+  const fetchCompactnessRatio = async () => {
+    if (partMassAir && partMassFluid && partDensity) {
+      try {
+        // First fetch compactness ratio
+        const compactnessResponse = await fetch(`http://localhost:4000/parts/compactness-ratio?partDensity=${partDensity}&theoreticalDensity=${theoreticalDensity}`);
+        const compactnessData = await compactnessResponse.json();
+        setCompactnessRatio(compactnessData.compactnessRatio || '0');
+
+        // Then calculate porosity if master sample exists
+        if (masterExists === 'yes' && densityMasterSample) {
+          const porosityResponse = await fetch(`http://localhost:4000/parts/calculate-porosity?masterSampleDensity=${densityMasterSample}&partDensity=${partDensity}`);
+          const porosityData = await porosityResponse.json();
+          setPorosity(porosityData.porosity || '0');
+        } else {
+          setPorosity('N/A');
+        }
+      } catch (error) {
+        console.error('Error fetching ratios:', error);
+        setCompactnessRatio('0');
+        setPorosity('0');
+      }
+    }
+  };
+
+  if (submitClicked) {
+    fetchCompactnessRatio();
+  }
+}, [partMassAir, partMassFluid, theoreticalDensity, partDensity, submitClicked, masterExists, densityMasterSample]);
+
+useEffect(() => {
+  const fetchCompactnessRatios = async () => {
+    if (partMassAirArray.length && partMassFluidArray.length && partDensityArray.length) {
+      try {
+        const updatedCompactnessRatios = [];
+        const updatedPorosities = [];
+
+        // Find the highest density part if master sample doesn't exist
+        let masterDensity = masterExists === 'yes' ? densityMasterSample : '0';
+        if (masterExists === 'no') {
+          const highestDensityPart = Math.max(...partDensityArray.map(d => parseFloat(d)));
+          masterDensity = highestDensityPart.toString();
+        }
+
+        // Iterate over each part
+        for (let i = 0; i < partDensityArray.length; i++) {
+          const partDensity = partDensityArray[i];
+
+          // Fetch compactness ratio
+          const compactnessResponse = await fetch(`http://localhost:4000/parts/compactness-ratio?partDensity=${partDensity}&theoreticalDensity=${theoreticalDensity}`);
+          const compactnessData = await compactnessResponse.json();
+          updatedCompactnessRatios[i] = compactnessData.compactnessRatio || '0';
+
+          // Calculate porosity
+          if (masterDensity !== '0') {
+            const porosityResponse = await fetch(`http://localhost:4000/parts/calculate-porosity?masterSampleDensity=${masterDensity}&partDensity=${partDensity}`);
+            const porosityData = await porosityResponse.json();
+            updatedPorosities[i] = porosityData.porosity || '0';
+          } else {
+            updatedPorosities[i] = 'N/A';
+          }
+        }
+
+        setCompactnessRatioArray(updatedCompactnessRatios);
+        setPorosityArray(updatedPorosities);
+      } catch (error) {
+        console.error('Error fetching ratios:', error);
+        setCompactnessRatioArray(new Array(partDensityArray.length).fill('0'));
+        setPorosityArray(new Array(partDensityArray.length).fill('0'));
+      }
+    }
+  };
+
+  if (submitClicked) {
+    fetchCompactnessRatios();
+  }
+}, [partMassAirArray, partMassFluidArray, partDensityArray, submitClicked, theoreticalDensity, masterExists, densityMasterSample]);
+
+
   useEffect(() => {
     const fetchCompactnessRatios = async () => {
       if (partMassAirArray.length && partMassFluidArray.length && partDensityArray.length) {
