@@ -64,7 +64,7 @@ const UpdatePart = ({ selectedPartCode, onSave, onClose }) => {
   };
 
   const handleSave = async () => {
-    if (totalPercentage !== 100) {
+    if (totalPercentage-100 > 0.01) {
       alert('The total percentage of all elements must add up to 100% before saving.');
       return;
     }
@@ -153,13 +153,14 @@ const UpdatePart = ({ selectedPartCode, onSave, onClose }) => {
                       <td className="py-2 px-4 border-t border-brand-lighter">
                         <input
                           type="number"
+                          step="0.01"
                           value={item.percentage || ''}
                           onChange={(e) => handleCompositionChange(index, 'percentage', e.target.value)}
                           className="border border-brand-lighter rounded-lg w-full p-2 focus:outline-none focus:ring-2 focus:ring-brand-primary transition duration-300"
                           placeholder="Percentage"
                           min="0"
                           max="100"
-                          step="any"
+                          
                         />
                       </td>
                     </tr>
@@ -167,7 +168,7 @@ const UpdatePart = ({ selectedPartCode, onSave, onClose }) => {
                 </tbody>
               </table>
               <p className={totalPercentage !== 100 ? 'error-message' : 'success-message'}>
-                Total percentage: {totalPercentage}% (should equal 100%)
+                Total percentage: {totalPercentage.toFixed(2)}% (should equal 100%)
               </p>
               <div className="flex justify-end space-x-4 mt-6">
                 <button

@@ -114,7 +114,7 @@ const AddPart = () => {
   const handleCompositionChange = (index, field, value) => {
     const newComposition = [...composition];
     const oldSymbol = newComposition[index].symbol;
-
+  
     if (field === 'symbol') {
       if (oldSymbol && oldSymbol !== value) {
         setSelectedSymbols((prevSymbols) => {
@@ -123,39 +123,40 @@ const AddPart = () => {
           return updatedSymbols;
         });
       }
-
+  
       if (value && !selectedSymbols.has(value)) {
         setSelectedSymbols((prevSymbols) => new Set(prevSymbols.add(value)));
       }
     }
-
-    newComposition[index][field] = value;
-
+  
+    newComposition[index][field] = field === 'percentage' ? parseFloat(value) || 0 : value;
+  
     if (field === 'percentage') {
       const totalPercentage = newComposition.reduce((sum, el, i) => sum + (i === 0 ? 0 : parseFloat(el.percentage || 0)), 0);
-      newComposition[0].percentage = 100 - totalPercentage;
+      newComposition[0].percentage = Math.max(0, 100 - totalPercentage); // Adjust the first element
     }
-
+  
     setComposition(newComposition);
   };
+  
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setErrorMessage('');
-
+    e.preventDefault(); // Prevent default form submission behavior
+    setErrorMessage(''); // Clear any previous error messages
+  
     // Validation: Ensure part code is unique
     if (existingPartCodes.includes(partCode)) {
       setErrorMessage('Part code already exists. Please enter a unique part code.');
       return;
     }
-
+  
     if (useStandardAlloy) {
       // Validate that a standard alloy is selected
       if (!selectedStandardAlloy) {
         setErrorMessage('Please select a standard alloy.');
         return;
       }
-
+  
       // Proceed with standard alloy submission
       try {
         const response = await fetch('http://localhost:4000/parts/', {
@@ -163,11 +164,16 @@ const AddPart = () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ partCode, partName, userId, standardAlloyId: selectedStandardAlloy }),
+          body: JSON.stringify({
+            partCode,
+            partName,
+            userId,
+            standardAlloyId: selectedStandardAlloy,
+          }),
         });
-
+  
         if (response.ok) {
-          // Reset form after successful submission
+          // Reset form fields after successful submission
           setPartCode('');
           setPartName('');
           setSelectedStandardAlloy('');
@@ -184,20 +190,21 @@ const AddPart = () => {
         setErrorMessage('Internal server error.');
       }
     } else {
-      // Validation: Ensure all elements have a symbol
+      // Validation: Ensure all elements in composition have a symbol
       const hasUnselectedSymbols = composition.some((el) => !el.symbol);
       if (hasUnselectedSymbols) {
         setErrorMessage('All elements must have a selected symbol.');
         return;
       }
-
-      // Validation: Ensure all percentages add up to 100
-      const totalPercentage = composition.reduce((sum, el) => sum + parseFloat(el.percentage || 0), 0);
-      if (totalPercentage !== 100) {
+  
+      // Validation: Ensure total composition percentages add up to 100
+      const totalPercentage = composition.reduce((sum, el) => sum + (el.percentage || 0), 0);
+      console.log(totalPercentage)
+      if (totalPercentage -100>0.01) {
         setErrorMessage('Total composition percentage must equal 100%.');
         return;
       }
-
+  
       // Proceed with composition submission
       try {
         const response = await fetch('http://localhost:4000/parts/', {
@@ -205,11 +212,16 @@ const AddPart = () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ partCode, partName, composition, userId }),
+          body: JSON.stringify({
+            partCode,
+            partName,
+            composition,
+            userId,
+          }),
         });
-
+  
         if (response.ok) {
-          // Reset form after successful submission
+          // Reset form fields after successful submission
           setPartCode('');
           setPartName('');
           setComposition([{ symbol: '', percentage: 0 }]);
@@ -227,6 +239,7 @@ const AddPart = () => {
       }
     }
   };
+  
 
   return (
     <div className="min-h-screen flex flex-col bg-brand-light font-poppins">
@@ -344,6 +357,7 @@ const AddPart = () => {
                         <div className="flex-1">
                           <input
                             type="number"
+                            step="0.01"
                             value={element.percentage}
                             onChange={(e) => handleCompositionChange(index, 'percentage', e.target.value)}
                             className={`p-3 rounded-lg border border-brand-lighter w-full bg-white bg-opacity-50 focus:outline-none focus:ring-2 focus:ring-brand-primary transition duration-300 ${
