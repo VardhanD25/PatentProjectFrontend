@@ -7,6 +7,8 @@ import UserInput from './pages/UserInput';
 import AddPart from './pages/AddPart';
 import ReportPage from './pages/ReportPage';
 import LotReportPage from './pages/LotReportPage';
+import FirstEntry from './components/FirstEntry';
+import SecondEntry from './components/SecondEntry';
 
 
 function App() {
@@ -23,6 +25,8 @@ function App() {
               <Route path="/reportpage" element={<ReportPage/>}/>
               <Route path="/addpart" element={<AddPart/>}/>
               <Route path="/lotreportpage" element={<LotReportPage/>}/>
+              <Route path="/first-entry" element={<FirstEntry />} />
+              <Route path="/second-entry" element={<SecondEntry />} />
             </Routes>
           </div>
         </AuthContextProvider>
