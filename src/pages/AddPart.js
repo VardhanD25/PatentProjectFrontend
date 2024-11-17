@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+import { motion } from 'framer-motion';
 
 const AddPart = () => {
   const [partCode, setPartCode] = useState('');
@@ -229,202 +231,188 @@ const AddPart = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-brand-light font-poppins">
-      {/* Navbar */}
-      <Navbar />
-      <br />
-      <br />
-      <br />
-      
-      {/* Main Content */}
-      <main className="flex-grow p-8">
-        <div className="max-w-4xl mx-auto bg-white bg-opacity-20 backdrop-blur-sm rounded-xl shadow-lg p-8 border border-brand-lighter hover:shadow-2xl transition duration-300">
-          <h2 className="text-3xl font-semibold mb-6 text-brand-dark hover:text-brand-primary transition duration-300 text-center">
-            Add Part
-          </h2>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Part Code Field */}
-            <div>
-              <label htmlFor="partCode" className="block text-sm font-medium text-gray-700 mb-1">
-                Part Code:
-              </label>
-              <input
-                type="text"
-                id="partCode"
-                value={partCode}
-                onChange={(e) => setPartCode(e.target.value)}
-                className="p-3 rounded-lg border border-brand-lighter w-full bg-white bg-opacity-50 focus:outline-none focus:ring-2 focus:ring-brand-primary transition duration-300"
-                required
-                placeholder="Enter unique part code"
-              />
-            </div>
+    <div className="min-h-screen flex flex-col bg-slate-950 font-quicksand text-slate-200">
+      {/* Background with Grid */}
+      <div className="fixed inset-0 bg-gradient-to-b from-slate-950 to-slate-900">
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+        <motion.div
+          animate={{
+            opacity: [0.3, 0.5, 0.3],
+            scale: [1, 1.1, 1],
+          }}
+          transition={{ duration: 8, repeat: Infinity }}
+          className="fixed inset-0 bg-gradient-to-r from-slate-950/0 via-slate-100/5 to-slate-950/0"
+        />
+      </div>
 
-            {/* Part Name Field */}
-            <div>
-              <label htmlFor="partName" className="block text-sm font-medium text-gray-700 mb-1">
-                Part Name:
-              </label>
-              <input
-                type="text"
-                id="partName"
-                value={partName}
-                onChange={(e) => setPartName(e.target.value)}
-                className="p-3 rounded-lg border border-brand-lighter w-full bg-white bg-opacity-50 focus:outline-none focus:ring-2 focus:ring-brand-primary transition duration-300"
-                required
-                placeholder="Enter part name"
-              />
-            </div>
+      {/* Content Container */}
+      <div className="relative z-10 flex flex-col min-h-screen">
+        <Navbar />
 
-            {/* Use Standard Alloy Checkbox */}
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                id="useStandardAlloy"
-                checked={useStandardAlloy}
-                onChange={(e) => setUseStandardAlloy(e.target.checked)}
-                className="h-4 w-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary"
-              />
-              <label htmlFor="useStandardAlloy" className="ml-2 block text-sm text-gray-700">
-                Use Standard Alloy
-              </label>
-            </div>
+        {/* Main Content */}
+        <main className="flex-grow p-8 mt-[140px] mb-[80px]">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="max-w-4xl mx-auto"
+          >
+            {/* Form Card */}
+            <div className="relative">
+              {/* Decorative glow effect */}
+              <div className="absolute -inset-1 bg-gradient-to-r from-slate-100/10 to-slate-400/10 rounded-2xl blur-lg" />
+              
+              <div className="relative bg-slate-900/50 backdrop-blur-xl rounded-2xl border border-slate-700/50 p-8">
+                <h2 className="text-3xl font-bold text-slate-200 mb-8 text-center">Add Part</h2>
+                
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  {/* Part Code Field */}
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-slate-300">Part Code</label>
+                    <input
+                      type="text"
+                      value={partCode}
+                      onChange={(e) => setPartCode(e.target.value)}
+                      className="w-full px-4 py-3 rounded-lg bg-slate-800/50 border border-slate-700/50 text-slate-200 placeholder-slate-400 focus:outline-none focus:border-slate-600 focus:ring-1 focus:ring-slate-600 transition-colors duration-300"
+                      required
+                      placeholder="Enter unique part code"
+                    />
+                  </div>
 
-            {/* Conditional Rendering: Standard Alloy Selection */}
-            {useStandardAlloy ? (
-              <div>
-                <label htmlFor="standardAlloy" className="block text-sm font-medium text-gray-700 mb-1">
-                  Select Standard Alloy:
-                </label>
-                <select
-                  id="standardAlloy"
-                  value={selectedStandardAlloy}
-                  onChange={(e) => setSelectedStandardAlloy(e.target.value)}
-                  className="p-3 rounded-lg border border-brand-lighter w-full bg-white bg-opacity-50 focus:outline-none focus:ring-2 focus:ring-brand-primary transition duration-300"
-                  required
-                >
-                  <option value="">Select Standard Alloy</option>
-                  {standardAlloys.map((alloy) => (
-                    <option key={alloy._id} value={alloy._id}>
-                      {alloy.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            ) : (
-              /* Composition Fields */
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Composition:</label>
-                <div className="space-y-6">
-                  {composition.map((element, index) => (
-                    <div key={index} className="flex flex-col space-y-2">
-                      {/* Inputs Row */}
-                      <div className="flex space-x-4">
-                        {/* Element Symbol Dropdown */}
-                        <div className="flex-1">
-                          <select
-                            value={element.symbol}
-                            onChange={(e) => handleCompositionChange(index, 'symbol', e.target.value)}
-                            className={`p-3 rounded-lg border border-brand-lighter w-full bg-white bg-opacity-50 focus:outline-none focus:ring-2 focus:ring-brand-primary transition duration-300 ${
-                              !element.symbol && errorMessage.includes('selected symbol') ? 'border-red-500' : ''
-                            }`}
-                            required
-                          >
-                            <option value="">Select Symbol</option>
-                            {elementSymbols
-                              .filter((symbol) => !selectedSymbols.has(symbol) || symbol === element.symbol)
-                              .map((symbol) => (
-                                <option key={symbol} value={symbol}>
-                                  {symbol}
-                                </option>
-                              ))}
-                          </select>
-                        </div>
+                  {/* Part Name Field */}
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-slate-300">Part Name</label>
+                    <input
+                      type="text"
+                      value={partName}
+                      onChange={(e) => setPartName(e.target.value)}
+                      className="w-full px-4 py-3 rounded-lg bg-slate-800/50 border border-slate-700/50 text-slate-200 placeholder-slate-400 focus:outline-none focus:border-slate-600 focus:ring-1 focus:ring-slate-600 transition-colors duration-300"
+                      required
+                      placeholder="Enter part name"
+                    />
+                  </div>
 
-                        {/* Percentage Input */}
-                        <div className="flex-1">
-                          <input
-                            type="number"
-                            value={element.percentage}
-                            onChange={(e) => handleCompositionChange(index, 'percentage', e.target.value)}
-                            className={`p-3 rounded-lg border border-brand-lighter w-full bg-white bg-opacity-50 focus:outline-none focus:ring-2 focus:ring-brand-primary transition duration-300 ${
-                              errorMessage.includes('percentage') ? 'border-red-500' : ''
-                            }`}
-                            placeholder="Percentage"
-                            min="0"
-                            max="100"
-                            required
-                          />
-                        </div>
-                      </div>
+                  {/* Use Standard Alloy Checkbox */}
+                  <div className="flex items-center space-x-3">
+                    <input
+                      type="checkbox"
+                      id="useStandardAlloy"
+                      checked={useStandardAlloy}
+                      onChange={(e) => setUseStandardAlloy(e.target.checked)}
+                      className="w-4 h-4 rounded border-slate-600 text-slate-200 focus:ring-slate-500 bg-slate-800/50"
+                    />
+                    <label htmlFor="useStandardAlloy" className="text-sm text-slate-300">
+                      Use Standard Alloy
+                    </label>
+                  </div>
 
-                      {/* Remove Button */}
-                      {index > 0 && (
-                        <div className="flex justify-end">
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveElement(index)}
-                            className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition duration-300"
-                          >
-                            Remove
-                          </button>
-                        </div>
-                      )}
+                  {/* Conditional Rendering based on checkbox */}
+                  {useStandardAlloy ? (
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-slate-300">Select Standard Alloy</label>
+                      <select
+                        value={selectedStandardAlloy}
+                        onChange={(e) => setSelectedStandardAlloy(e.target.value)}
+                        className="w-full px-4 py-3 rounded-lg bg-slate-800/50 border border-slate-700/50 text-slate-200 focus:outline-none focus:border-slate-600 focus:ring-1 focus:ring-slate-600 transition-colors duration-300"
+                        required
+                      >
+                        <option value="">Select Standard Alloy</option>
+                        {standardAlloys.map((alloy) => (
+                          <option key={alloy._id} value={alloy._id}>
+                            {alloy.name}
+                          </option>
+                        ))}
+                      </select>
                     </div>
-                  ))}
-                </div>
+                  ) : (
+                    <div className="space-y-4">
+                      <label className="text-sm font-medium text-slate-300">Composition</label>
+                      {composition.map((element, index) => (
+                        <div key={index} className="space-y-4 p-4 bg-slate-800/30 rounded-lg border border-slate-700/50">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                              <select
+                                value={element.symbol}
+                                onChange={(e) => handleCompositionChange(index, 'symbol', e.target.value)}
+                                className="w-full px-4 py-3 rounded-lg bg-slate-800/50 border border-slate-700/50 text-slate-200 focus:outline-none focus:border-slate-600 focus:ring-1 focus:ring-slate-600 transition-colors duration-300"
+                                required
+                              >
+                                <option value="">Select Symbol</option>
+                                {elementSymbols
+                                  .filter((symbol) => !selectedSymbols.has(symbol) || symbol === element.symbol)
+                                  .map((symbol) => (
+                                    <option key={symbol} value={symbol}>{symbol}</option>
+                                  ))}
+                              </select>
+                            </div>
+                            <div className="space-y-2">
+                              <input
+                                type="number"
+                                value={element.percentage}
+                                onChange={(e) => handleCompositionChange(index, 'percentage', e.target.value)}
+                                className="w-full px-4 py-3 rounded-lg bg-slate-800/50 border border-slate-700/50 text-slate-200 focus:outline-none focus:border-slate-600 focus:ring-1 focus:ring-slate-600 transition-colors duration-300"
+                                placeholder="Percentage"
+                                min="0"
+                                max="100"
+                                required
+                              />
+                            </div>
+                          </div>
+                          
+                          {index > 0 && (
+                            <motion.button
+                              type="button"
+                              onClick={() => handleRemoveElement(index)}
+                              whileHover={{ scale: 1.02 }}
+                              whileTap={{ scale: 0.98 }}
+                              className="px-4 py-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 transition-colors duration-300"
+                            >
+                              Remove Element
+                            </motion.button>
+                          )}
+                        </div>
+                      ))}
+                      
+                      <motion.button
+                        type="button"
+                        onClick={handleAddElement}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="w-full px-4 py-2 bg-slate-700/50 text-slate-200 rounded-lg hover:bg-slate-700/70 transition-colors duration-300"
+                      >
+                        Add Element
+                      </motion.button>
+                    </div>
+                  )}
 
-                {/* Add Element Button */}
-                <div className="flex justify-center">
-                  <button
-                    type="button"
-                    onClick={handleAddElement}
-                    className="mt-4 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition duration-300"
+                  {/* Error Message */}
+                  {errorMessage && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="text-red-400 text-sm text-center bg-red-500/10 py-2 rounded-lg"
+                    >
+                      {errorMessage}
+                    </motion.div>
+                  )}
+
+                  {/* Submit Button */}
+                  <motion.button
+                    type="submit"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="w-full px-6 py-3 bg-slate-200 text-slate-900 rounded-lg font-semibold hover:bg-white transition-all duration-300"
                   >
-                    Add Element
-                  </button>
-                </div>
+                    Add Part
+                  </motion.button>
+                </form>
               </div>
-            )}
-
-            {/* Error Message */}
-            {errorMessage && (
-              <p className="text-red-500 text-center">
-                {errorMessage}
-              </p>
-            )}
-
-            {/* Submit Button */}
-            <div className="text-center">
-              <button
-                type="submit"
-                className="mt-4 w-full py-3 rounded-lg bg-brand-primary text-white font-semibold hover:bg-brand-dark transition duration-300"
-              >
-                Add Part
-              </button>
             </div>
-          </form>
-        </div>
-      </main>
+          </motion.div>
+        </main>
 
-      {/* Footer */}
-      <footer className="bg-brand-dark text-white py-6">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="mb-4 md:mb-0">&copy; {new Date().getFullYear()} Compactness Calculator. All rights reserved.</p>
-            <div className="flex space-x-4">
-              <a href="/privacy" className="hover:text-brand-primary transition duration-300">
-                Privacy Policy
-              </a>
-              <a href="/terms" className="hover:text-brand-primary transition duration-300">
-                Terms of Service
-              </a>
-              <a href="/contact" className="hover:text-brand-primary transition duration-300">
-                Contact
-              </a>
-            </div>
-          </div>
-        </div>
-      </footer>
+        <Footer />
+      </div>
     </div>
   );
 };

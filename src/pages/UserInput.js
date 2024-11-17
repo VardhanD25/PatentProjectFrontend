@@ -5,6 +5,8 @@ import SinglePieceEntry from '../components/SinglePieceEntry'; // Import ThirdEn
 import LotEntry from '../components/LotEntry'
 import Navbar from '../components/Navbar';
 import UpdatePart from '../components/UpdatePart';
+import { motion } from 'framer-motion';
+
 function UserInput() {
   
   const [isUpdatePartVisible, setIsUpdatePartVisible] = useState(false);
@@ -469,14 +471,7 @@ const validateLotEntry = () => {
           onMasterAttachmentExistsChange={handleMasterAttachmentExistsChange}
         />
       )}
-      {selectedPartCode && densityType === 'calculated' && currentScreen==="first" && !isUpdatePartVisible && (
-  <button
-    onClick={() => setIsUpdatePartVisible(true)}
-    className="fixed right-5 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-blue-600"
-  >
-    {"View Part Composition"}
-  </button>
-)}
+      
 
 
 
@@ -563,22 +558,27 @@ const validateLotEntry = () => {
   // Include other props as needed
 />
 )}
-      <div className="flex justify-between p-4">
+      <div className="fixed bottom-8 right-8 flex gap-4 z-50">
         {currentScreen !== 'first' && !isUpdatePartVisible && (
-          <button 
+          <motion.button 
             onClick={goToPreviousScreen}
-            className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="px-6 py-2 rounded-lg bg-slate-800/50 border border-slate-700/50 text-slate-300 hover:bg-slate-800/70 hover:text-white transition-all duration-300 font-medium"
           >
             Prev
-          </button>
+          </motion.button>
         )}
+
         {currentScreen !== 'third' && !isUpdatePartVisible && (
-          <button 
+          <motion.button 
             onClick={goToNextScreen}
-            className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="px-6 py-2 rounded-lg bg-slate-200 text-slate-900 hover:bg-white transition-all duration-300 font-medium"
           >
             Next
-          </button>
+          </motion.button>
         )}
       </div>
     </div>

@@ -14,7 +14,7 @@ module.exports = {
         },
       },
       fontFamily: {
-        poppins: ['"Poppins"', 'sans-serif'],
+        poppins: ['"Quicksand"', 'sans-serif'],
       },
       backdropBlur: {
         xs: '2px',
