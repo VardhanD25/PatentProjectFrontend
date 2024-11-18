@@ -74,7 +74,7 @@ function PartsManagement() {
           throw new Error(data.message || 'Failed to fetch parts');
         }
 
-        console.log('Fetched parts:', data);
+        console.log('Fetched parts with standard alloys:', data.parts);
         setParts(data.parts || []);
       } catch (error) {
         console.error('Error fetching parts:', error);
@@ -157,7 +157,8 @@ function PartsManagement() {
                     
                     {part.standardAlloyId ? (
                       <p className="text-slate-400">
-                        Standard Alloy: {part.standardAlloyId?.name || 'N/A'} ({part.standardAlloyId?.country || 'N/A'})
+                        Standard Alloy: {part.standardAlloyId.name || 'N/A'} 
+                        {part.standardAlloyId.country ? ` (${part.standardAlloyId.country})` : ''}
                       </p>
                     ) : (
                       <div className="mt-2">
