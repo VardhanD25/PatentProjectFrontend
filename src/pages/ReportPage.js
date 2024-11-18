@@ -184,55 +184,54 @@ function ReportPage() {
 
           {/* Report Preview - Always show all sections */}
           <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-lg p-8 shadow-xl space-y-8">
-            {/* Basic Information - Always visible */}
-            <div className="space-y-6">
-              <h3 className="text-xl font-semibold text-slate-200">Basic Information</h3>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-slate-400">Date:</p>
-                  <p className="text-slate-200">{date}</p>
-                </div>
-                <div>
-                  <p className="text-slate-400">Part Code:</p>
-                  <p className="text-slate-200">{partCode}</p>
-                </div>
-                <div>
-                  <p className="text-slate-400">Part Name:</p>
-                  <p className="text-slate-200">{partName}</p>
-                </div>
-                <div>
-                  <p className="text-slate-400">Theoretical Density:</p>
-                  <p className="text-slate-200">{density}</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Measurements - Always visible */}
-            <div className="space-y-6">
-              <h3 className="text-xl font-semibold text-slate-200">Measurements</h3>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-slate-400">Mass in Air:</p>
-                  <p className="text-slate-200">{massInAir}</p>
-                </div>
-                <div>
-                  <p className="text-slate-400">Mass in Fluid:</p>
-                  <p className="text-slate-200">{massInFluid}</p>
-                </div>
-                <div>
-                  <p className="text-slate-400">Fluid Density:</p>
-                  <p className="text-slate-200">{fluidDensity}</p>
-                </div>
-                <div>
-                  <p className="text-slate-400">Item Density:</p>
-                  <p className="text-slate-200">{densityOfItem}</p>
-                </div>
-                <div>
-                  <p className="text-slate-400">Compactness Ratio:</p>
-                  <p className="text-slate-200">{compactnessRatio}</p>
-                </div>
-              </div>
-            </div>
+           {/* Basic Information - Always visible */}
+<div className="space-y-6">
+  <h3 className="text-xl font-semibold text-slate-200">Basic Information</h3>
+  <div className="space-y-4">
+    <div className="flex items-center">
+      <p className="text-slate-400 w-1/3">Date:</p>
+      <p className="text-slate-200">{date}</p>
+    </div>
+    <div className="flex items-center">
+      <p className="text-slate-400 w-1/3">Part Code:</p>
+      <p className="text-slate-200">{partCode}</p>
+    </div>
+    <div className="flex items-center">
+      <p className="text-slate-400 w-1/3">Part Name:</p>
+      <p className="text-slate-200">{partName}</p>
+    </div>
+    <div className="flex items-center">
+      <p className="text-slate-400 w-1/3">Theoretical Density:</p>
+      <p className="text-slate-200">{density}</p>
+    </div>
+  </div>
+</div>
+           {/* Measurements - Always visible */}
+<div className="space-y-6">
+  <h3 className="text-xl font-semibold text-slate-200">Measurements</h3>
+  <div className="space-y-4">
+    <div className="flex items-center">
+      <p className="text-slate-400 w-1/3">Mass in Air:</p>
+      <p className="text-slate-200">{massInAir}</p>
+    </div>
+    <div className="flex items-center">
+      <p className="text-slate-400 w-1/3">Mass in Fluid:</p>
+      <p className="text-slate-200">{massInFluid}</p>
+    </div>
+    <div className="flex items-center">
+      <p className="text-slate-400 w-1/3">Fluid Density:</p>
+      <p className="text-slate-200">{fluidDensity}</p>
+    </div>
+    <div className="flex items-center">
+      <p className="text-slate-400 w-1/3">Item Density:</p>
+      <p className="text-slate-200">{densityOfItem}</p>
+    </div>
+    <div className="flex items-center">
+      <p className="text-slate-400 w-1/3">Compactness Ratio:</p>
+      <p className="text-slate-200">{compactnessRatio}</p>
+    </div>
+  </div>
+</div>
 
             {/* Chemical Composition - Show if exists */}
             {chemicalComposition && Object.keys(chemicalComposition).length > 0 && (
@@ -265,19 +264,19 @@ function ReportPage() {
 
             {/* Master Details - Show if exists */}
             {masterExists === 'yes' && (
-              <div className="space-y-6">
-                <h3 className="text-xl font-semibold text-slate-200">Master Sample Details</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-slate-400">Master Sample has Attachment:</p>
-                    <p className="text-slate-200">{masterAttachmentExists ? 'Yes' : 'No'}</p>
-                  </div>
-                  <div>
-                    <p className="text-slate-400">Density of Master Sample:</p>
-                    <p className="text-slate-200">{densityOfMasterSample}</p>
-                  </div>
-                </div>
-              </div>
+  <div className="space-y-6">
+    <h3 className="text-xl font-semibold text-slate-200">Master Sample Details</h3>
+    <div className="space-y-4">
+      <div className="flex items-center">
+        <p className="text-slate-400 w-1/3">Master Sample has Attachment:</p>
+        <p className="text-slate-200">{masterAttachmentExists ? 'Yes' : 'No'}</p>
+      </div>
+      <div className="flex items-center">
+        <p className="text-slate-400 w-1/3">Density of Master Sample:</p>
+        <p className="text-slate-200">{densityOfMasterSample}</p>
+      </div>
+    </div>
+  </div>
             )}
           </div>
 

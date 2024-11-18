@@ -378,6 +378,7 @@ const AddPart = () => {
                             <div className="space-y-2">
                               <input
                                 type="number"
+                                step="0.01"
                                 value={element.percentage}
                                 onChange={(e) => handleCompositionChange(index, 'percentage', e.target.value)}
                                 className="w-full px-4 py-3 rounded-lg bg-slate-800/50 border border-slate-700/50 text-slate-200 focus:outline-none focus:border-slate-600 focus:ring-1 focus:ring-slate-600 transition-colors duration-300"

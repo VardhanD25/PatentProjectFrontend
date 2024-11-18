@@ -275,7 +275,7 @@ const UpdatePart = ({ selectedPartCode, onSave, onClose }) => {
             </table>
 
             <div className={`text-center py-2 px-4 rounded-lg ${
-              totalPercentage !== 100 
+              totalPercentage !== 100.00 
                 ? 'bg-red-500/10 text-red-400' 
                 : 'bg-green-500/10 text-green-400'
             }`}>

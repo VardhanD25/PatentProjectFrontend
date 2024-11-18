@@ -9,8 +9,8 @@ import ReportPage from './pages/ReportPage';
 import LotReportPage from './pages/LotReportPage';
 import FirstEntry from './components/FirstEntry';
 import SecondEntry from './components/SecondEntry';
-
-
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import PartsManagement from './pages/PartsManagement';
 function App() {
   return (
     <div className="App">
@@ -27,6 +27,8 @@ function App() {
               <Route path="/lotreportpage" element={<LotReportPage/>}/>
               <Route path="/first-entry" element={<FirstEntry />} />
               <Route path="/second-entry" element={<SecondEntry />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/parts-management" element={<PartsManagement />} />
             </Routes>
           </div>
         </AuthContextProvider>

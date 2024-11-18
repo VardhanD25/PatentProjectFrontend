@@ -58,7 +58,7 @@ const Navbar = () => {
                 <div className="flex items-center space-x-8">
                   <NavLink to="/addpart">Add Part</NavLink>
                   <NavLink to="/userinput">Calculator</NavLink>
-                  
+                  <NavLink to="/parts-management">Parts Management</NavLink>
                   {/* Profile Menu */}
                   <div className="relative profile-menu">
                     <motion.button

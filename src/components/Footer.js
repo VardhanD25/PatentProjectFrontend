@@ -26,22 +26,26 @@ const Footer = () => {
             </p>
           </div>
 
-          {/* Quick Links */}
-          <div className="space-y-4">
-            <h3 className="text-slate-200 font-semibold">Quick Links</h3>
-            <ul className="space-y-2">
-              {['Home', 'Calculator', 'Add Part'].map((item) => (
-                <li key={item}>
-                  <Link 
-                    to={`/${item.toLowerCase().replace(' ', '')}`}
-                    className="text-sm text-slate-400 hover:text-slate-200 transition-colors duration-300"
-                  >
-                    {item}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+{/* Quick Links */}
+<div className="space-y-4">
+  <h3 className="text-slate-200 font-semibold">Quick Links</h3>
+  <ul className="space-y-2">
+    {['Home', 'Calculator', 'Add Part'].map((item) => (
+      <li key={item}>
+        <Link 
+          to={
+            item === 'Home' ? '/' : 
+            item === 'Calculator' ? '/userinput' : 
+            `/${item.toLowerCase().replace(' ', '')}`
+          }
+          className="text-sm text-slate-400 hover:text-slate-200 transition-colors duration-300"
+        >
+          {item}
+        </Link>
+      </li>
+    ))}
+  </ul>
+</div>
 
           {/* Contact Info */}
           <div className="space-y-4">
