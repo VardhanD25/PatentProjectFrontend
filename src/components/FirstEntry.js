@@ -38,6 +38,7 @@ function FirstEntry({
   const [showUpdatePanel, setShowUpdatePanel] = useState(false);
   const [showStandardAlloyPanel, setShowStandardAlloyPanel] = useState(false);
 
+
   useEffect(() => {
     setDate(selectedDate);
   }, [selectedDate]);
@@ -82,6 +83,7 @@ function FirstEntry({
     };
 
     fetchSpecifiedDensity();
+    
   }, [partCode, density, showStandardAlloyPanel]); // Add showStandardAlloyPanel as dependency
 
   const handlePartCodeChange = (event) => {
@@ -140,6 +142,21 @@ function FirstEntry({
     e.preventDefault();
     e.stopPropagation();
     setShowStandardAlloyPanel(true);
+  };
+
+  const handleRefreshDensity = async (e) => {
+    e.preventDefault();
+    if (selectedPartCode && densityType === 'calculated') {
+      try {
+        const response = await fetch(`http://localhost:4000/parts/calculateDensity/${selectedPartCode}`);
+        const data = await response.json();
+        if (data.formattedDensity) {
+          onTheoreticalDensityChange(data.formattedDensity);
+        }
+      } catch (error) {
+        console.error('Error fetching theoretical density:', error);
+      }
+    }
   };
 
   return (
@@ -311,13 +328,35 @@ function FirstEntry({
                   {/* Theoretical Density Field */}
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-slate-300">Theoretical Density</label>
-                    <input
-                      type="text"
-                      value={theoreticalDensity}
-                      readOnly
-                      className="w-full px-4 py-3 rounded-lg bg-slate-800/50 border border-slate-700/50 text-slate-200 placeholder-slate-400 cursor-not-allowed opacity-75"
-                      placeholder="Theoretical density will be autofilled"
-                    />
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="text"
+                        value={theoreticalDensity}
+                        readOnly
+                        className="flex-1 px-4 py-3 rounded-lg bg-slate-800/50 border border-slate-700/50 text-slate-200 placeholder-slate-400 cursor-not-allowed opacity-75"
+                        placeholder="Theoretical density will be autofilled"
+                      />
+                      <motion.button
+                        onClick={handleRefreshDensity}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        className="p-2 rounded-lg bg-slate-800/50 border border-slate-700/50 text-slate-300 hover:bg-slate-800/70 hover:text-white transition-all duration-300"
+                      >
+                        <svg 
+                          className="w-5 h-5" 
+                          fill="none" 
+                          viewBox="0 0 24 24" 
+                          stroke="currentColor"
+                        >
+                          <path 
+                            strokeLinecap="round" 
+                            strokeLinejoin="round" 
+                            strokeWidth={2} 
+                            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" 
+                          />
+                        </svg>
+                      </motion.button>
+                    </div>
                   </div>
 
                   {/* Attachment Exists Field */}

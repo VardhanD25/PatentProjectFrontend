@@ -67,12 +67,14 @@ const UpdatePart = ({ selectedPartCode, onSave, onClose }) => {
   const handleSave = async (e) => {
     e.preventDefault();
     e.stopPropagation();
+    
     if (totalPercentage-100 > 0.01) {
       alert('The total percentage of all elements must add up to 100% before saving.');
       return;
     }
 
     try {
+      // First update the part composition
       const response = await fetch("http://localhost:4000/parts/updatePart", {
         method: 'PATCH',
         headers: {
@@ -84,8 +86,16 @@ const UpdatePart = ({ selectedPartCode, onSave, onClose }) => {
       const data = await response.json();
 
       if (response.ok) {
-        alert('Part updated successfully!');
-        onSave(true); // Pass true to indicate successful update
+        // After successful update, fetch the new calculated density
+        const densityResponse = await fetch(`http://localhost:4000/parts/calculateDensity/${selectedPartCode}`);
+        const densityData = await densityResponse.json();
+        
+        if (densityResponse.ok) {
+          alert('Part updated successfully!');
+          onSave(densityData.formattedDensity); // Pass the new density back to parent
+        } else {
+          alert('Part updated but failed to fetch new density');
+        }
       } else {
         alert(data.message || 'Error updating part');
       }

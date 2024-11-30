@@ -62,9 +62,12 @@ function UserInput() {
   const handleUpdatePartClose = () => {
     setIsUpdatePartVisible(false);
   };
-  const handleUpdatePartSave = () => {
-    // Implement save functionality
-    handleUpdatePartClose(); // Close the update part component
+  const handleUpdatePartSave = (newDensity) => {
+    if (newDensity) {
+      setTheoreticalDensity(newDensity); // Update the density directly
+    }
+    handleUpdatePartClose();
+     // Close the update part component
   };
   
 
@@ -328,6 +331,8 @@ useEffect(() => {
     };
 
     fetchTheoreticalDensity();
+    
+    
   }, [selectedPartCode, densityType,isUpdatePartVisible]);
 
   useEffect(() => {
@@ -528,6 +533,11 @@ const validateLotEntry = () => {
     setPartDensityArray(partDensityArray.filter((_, i) => i !== index));
   };
 
+  // Add this handler function
+  const handleTheoreticalDensityChange = (newDensity) => {
+    setTheoreticalDensity(newDensity);
+  };
+
   return (
     <div>
       <Navbar/>
@@ -550,6 +560,7 @@ const validateLotEntry = () => {
           masterAttachmentExists={masterAttachmentExists}
           selectedPartCode={selectedPartCode}
           onMasterAttachmentExistsChange={handleMasterAttachmentExistsChange}
+          onTheoreticalDensityChange={handleTheoreticalDensityChange}
         />
       )}
       
