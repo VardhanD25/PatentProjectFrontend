@@ -85,7 +85,7 @@ const UpdatePart = ({ selectedPartCode, onSave, onClose }) => {
 
       if (response.ok) {
         alert('Part updated successfully!');
-        onSave(); // Call the onSave callback if provided
+        onSave(true); // Pass true to indicate successful update
       } else {
         alert(data.message || 'Error updating part');
       }

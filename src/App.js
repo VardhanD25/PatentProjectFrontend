@@ -11,6 +11,8 @@ import FirstEntry from './components/FirstEntry';
 import SecondEntry from './components/SecondEntry';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import PartsManagement from './pages/PartsManagement';
+import AddStandardAlloy from './pages/AddStandardAlloy';
+
 function App() {
   return (
     <div className="App">
@@ -29,6 +31,7 @@ function App() {
               <Route path="/second-entry" element={<SecondEntry />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/parts-management" element={<PartsManagement />} />
+              <Route path="/add-standard-alloy" element={<AddStandardAlloy />} />
             </Routes>
           </div>
         </AuthContextProvider>

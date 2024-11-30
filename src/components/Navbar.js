@@ -59,6 +59,7 @@ const Navbar = () => {
                   <NavLink to="/addpart">Add Part</NavLink>
                   <NavLink to="/userinput">Calculator</NavLink>
                   <NavLink to="/parts-management">Parts Management</NavLink>
+                  <NavLink to="/add-standard-alloy">Add Standard Alloy</NavLink>
                   {/* Profile Menu */}
                   <div className="relative profile-menu">
                     <motion.button

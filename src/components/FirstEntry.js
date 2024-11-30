@@ -5,6 +5,7 @@ import Footer from '../components/Footer'; // Ensure Footer is imported
 import { motion } from 'framer-motion'; // Ensure motion is imported
 import { useNavigate } from 'react-router-dom';
 import UpdatePart from './UpdatePart';
+import UpdateStandardAlloy from './UpdateStandardAlloy';
 
 function FirstEntry({
   partCodes,
@@ -23,7 +24,8 @@ function FirstEntry({
   onMasterExistsChange,
   masterAttachmentExists,
   onMasterAttachmentExistsChange,
-  selectedPartCode
+  selectedPartCode,
+  onTheoreticalDensityChange
 }) {
   const [date, setDate] = useState(selectedDate);
   const [partCode, setPartCode] = useState(selectedPartCode || '');
@@ -34,6 +36,7 @@ function FirstEntry({
   const [masterAttachment, setMasterAttachment] = useState(masterAttachmentExists);
   const navigate = useNavigate();
   const [showUpdatePanel, setShowUpdatePanel] = useState(false);
+  const [showStandardAlloyPanel, setShowStandardAlloyPanel] = useState(false);
 
   useEffect(() => {
     setDate(selectedDate);
@@ -58,6 +61,28 @@ function FirstEntry({
   useEffect(() => {
     setMasterAttachment(masterAttachmentExists);
   }, [masterAttachmentExists]);
+
+  useEffect(() => {
+    const fetchSpecifiedDensity = async () => {
+      if (density === 'specified' && partCode) {
+        try {
+          const response = await fetch(`http://localhost:4000/parts/specified-density/${partCode}`);
+          const data = await response.json();
+          if (data.formattedDensity && data.formattedDensity !== '-1') {
+            onDensityTypeChange('specified'); // Ensure density type is set to specified
+            // Update theoretical density in parent component
+            if (typeof onTheoreticalDensityChange === 'function') {
+              onTheoreticalDensityChange(data.formattedDensity);
+            }
+          }
+        } catch (error) {
+          console.error('Error fetching specified density:', error);
+        }
+      }
+    };
+
+    fetchSpecifiedDensity();
+  }, [partCode, density, showStandardAlloyPanel]); // Add showStandardAlloyPanel as dependency
 
   const handlePartCodeChange = (event) => {
     const code = event.target.value;
@@ -109,6 +134,12 @@ function FirstEntry({
     e.preventDefault();
     e.stopPropagation();
     setShowUpdatePanel(true);
+  };
+
+  const handleShowStandardAlloy = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setShowStandardAlloyPanel(true);
   };
 
   return (
@@ -243,6 +274,38 @@ function FirstEntry({
                         </motion.button>
                       </motion.div>
                     )}
+
+                    {density === 'specified' && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                        className="mt-2"
+                      >
+                        <motion.button
+                          onClick={handleShowStandardAlloy}
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          className="w-full group relative px-4 py-2.5 bg-slate-800/50 rounded-lg border border-slate-700/50 hover:bg-slate-800/70 transition-all duration-300"
+                        >
+                          <div className="absolute inset-0 bg-gradient-to-r from-slate-100/0 via-slate-100/5 to-slate-100/0 rounded-lg" />
+                          <div className="flex items-center justify-center space-x-2">
+                            <svg 
+                              className="w-4 h-4 text-slate-300 group-hover:text-white transition-colors duration-300" 
+                              fill="none" 
+                              viewBox="0 0 24 24" 
+                              stroke="currentColor"
+                            >
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                            <span className="text-slate-300 group-hover:text-white font-medium transition-colors duration-300">
+                              {showStandardAlloyPanel ? 'Hide' : 'Show'} Standard Alloy
+                            </span>
+                          </div>
+                        </motion.button>
+                      </motion.div>
+                    )}
                   </div>
 
                   {/* Theoretical Density Field */}
@@ -335,6 +398,43 @@ function FirstEntry({
                     selectedPartCode={partCode}
                     onSave={() => setShowUpdatePanel(false)}
                     onClose={() => setShowUpdatePanel(false)}
+                  />
+                </motion.div>
+              </div>
+            </motion.div>
+          )}
+
+          {showStandardAlloyPanel && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-slate-950/90 backdrop-blur-sm z-50 overflow-y-auto"
+              onClick={(e) => {
+                if (e.target === e.currentTarget) {
+                  setShowStandardAlloyPanel(false);
+                }
+              }}
+            >
+              <div 
+                className="min-h-screen flex items-center justify-center p-4"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <motion.div
+                  initial={{ scale: 0.95, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.95, opacity: 0 }}
+                  transition={{ type: "spring", duration: 0.5 }}
+                >
+                  <UpdateStandardAlloy
+                    partCode={partCode}
+                    onClose={() => setShowStandardAlloyPanel(false)}
+                    onSave={(newDensity) => {
+                      setShowStandardAlloyPanel(false);
+                      if (newDensity && typeof onTheoreticalDensityChange === 'function') {
+                        onTheoreticalDensityChange(newDensity);
+                      }
+                    }}
                   />
                 </motion.div>
               </div>
